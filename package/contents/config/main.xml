@@ -12,21 +12,25 @@
         <entry name="showIcons" type="Bool">
             <default>true</default>
         </entry>
-        
+
         <entry name="showUnits" type="Bool">
             <default>true</default>
         </entry>
-        
+
         <entry name="speedUnits" type="String">
             <default>bytes</default>
         </entry>
-        
+
+        <entry name="fontSize" type="Int">
+            <default>80</default>
+        </entry>
+
         <entry name="updateInterval" type="Double">
             <default>1.0</default>
         </entry>
-        
+
         <entry name="customColors" type="Bool">
-            <default>true</default>
+            <default>false</default>
         </entry>
         <entry name="byteColor" type="Color">
             <default>#000000</default>
@@ -41,5 +45,5 @@
             <default>#FF8000</default>
         </entry>
     </group>
-    
+
 </kcfg>

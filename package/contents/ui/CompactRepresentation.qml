@@ -19,46 +19,70 @@ import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item {
-    property bool singleLine: parent.height * 0.8 < theme.smallestFont.pixelSize * 2 && plasmoid.formFactor != PlasmaCore.Types.Vertical
-    
-    property double iconWidth: showIcons ? iconTextMetrics.width * widthHack + unitTextMetrics.height * 0.2 : 0
-    property double speedWidth: speedTextMetrics.width * widthHack
-    property double unitWidth: showUnits ? unitTextMetrics.width * widthHack + unitTextMetrics.height * 0.2 : 0
-    
+    anchors.fill: parent
+    clip: true
+
+    property double marginFactor: 0.2
+
+    property bool singleLine: height / 2 * fontSizeScale < theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical
+
+    property double iconWidth: showIcons ? iconTextMetrics.advanceWidth + iconTextMetrics.font.pixelSize * marginFactor : 0
+    property double speedWidth: speedTextMetrics.advanceWidth
+    property double unitWidth: showUnits ? unitTextMetrics.advanceWidth + unitTextMetrics.font.pixelSize * marginFactor : 0
+    property double marginWidth: speedTextMetrics.font.pixelSize * marginFactor
+
     property double aspectRatio: {
         if (singleLine) {
-            return (2*iconWidth + 2*speedWidth + 2*unitWidth) /    speedTextMetrics.height  + 0.2
+            return (2*iconWidth + 2*speedWidth + 2*unitWidth + 3*marginWidth) / speedTextMetrics.font.pixelSize
         } else {
-            return (  iconWidth +   speedWidth +   unitWidth) / (2*speedTextMetrics.height)
+            if (plasmoid.formFactor != PlasmaCore.Types.Vertical) {
+                return (  iconWidth +   speedWidth +   unitWidth + 2*marginWidth) / speedTextMetrics.font.pixelSize
+            } else {
+                return (  iconWidth +   speedWidth +   unitWidth) / speedTextMetrics.font.pixelSize
+            }
         }
     }
-    
-    property double textHeight: plasmoid.formFactor != PlasmaCore.Types.Vertical ? (singleLine ? height : height / 2) : (width / aspectRatio / 2)
-    property double fontPixelSize: textHeight * 0.8
-    property double margin: textHeight * 0.2
-    
+
+    property double lineHeight: {
+        if (plasmoid.formFactor != PlasmaCore.Types.Vertical) {
+            return singleLine ? height : height / 2
+        } else {
+            return width / aspectRatio / 2
+        }
+    }
+
+    property double fontPixelSize: lineHeight * fontSizeScale
+
+    property double offset: {
+        if (plasmoid.formFactor != PlasmaCore.Types.Vertical) {
+            return fontPixelSize * 0.2
+        } else {
+            return (width - fontPixelSize * aspectRatio * 2) / 2
+        }
+    }
+
     Layout.minimumWidth: {
         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
             return 0
         } else if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
-            return parent.height * aspectRatio
+            return fontPixelSize * aspectRatio
         } else {
-            return parent.height * aspectRatio
+            return fontPixelSize * aspectRatio
         }
     }
     Layout.minimumHeight: {
         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
-            return parent.width / aspectRatio
+            return 2 * width / aspectRatio
         } else if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
             return 0
         } else {
-            return theme.smallestFont.pixelSize / 0.8
+            return theme.smallestFont.pixelSize / fontSizeScale
         }
     }
 
     Layout.preferredWidth: Layout.minimumWidth
     Layout.preferredHeight: Layout.minimumHeight
-    
+
     PlasmaCore.ToolTipArea {
         anchors.fill: parent
         icon: 'network-connect'
@@ -69,9 +93,9 @@ Item {
                 if (details != '') {
                     details += '<br><br>'
                 }
-                
+
                 var active = key === activeInterface ? ' (active)' : ''
-                
+
                 details += '<b>' + key + active + '</b><br>'
                 details += 'Downloaded: <b>' + totalData[key].downTotal + '</b>, Uploaded: <b>' + totalData[key].upTotal + '</b>'
             }
@@ -84,106 +108,130 @@ Item {
         text: '↓'
         font.pixelSize: 64
     }
-    
+
     TextMetrics {
         id: speedTextMetrics
         text: '1000.0'
         font.pixelSize: 64
     }
-    
+
     TextMetrics {
         id: unitTextMetrics
         text: speedUnits === 'bits' ? 'Mb' : 'MiB'
         font.pixelSize: 64
     }
-    
-    property double widthHack: 1.11
-        
-    Text {
-        property double w: iconTextMetrics.width * textHeight * widthHack / iconTextMetrics.height
 
-        id: downIcon
-        anchors.left: parent.left
+    Item {
+        id: offsetItem
+        width: offset
+        height: parent.height
+        x: 0
         y: 0
-        width: w
-        height: parent.height / 2
+    }
+
+    Text {
+        id: downIcon
+        clip: true
+
+        height: singleLine ? parent.height : parent.height / 2
+        width: iconTextMetrics.advanceWidth / iconTextMetrics.font.pixelSize * font.pixelSize
+
+        verticalAlignment: Text.AlignVCenter
+        anchors.left: offsetItem.right
+        y: 0
+
         text: '↓'
-        font.pixelSize: fontPixelSize
+        font.pixelSize: height * fontSizeScale
         color: theme.textColor
         visible: showIcons
     }
-    
-    Text {
-        property double w: speedTextMetrics.width * textHeight * widthHack / speedTextMetrics.height
 
+    Text {
         id: downText
+        clip: true
+
+        height: singleLine ? parent.height : parent.height / 2
+        width: speedTextMetrics.advanceWidth / speedTextMetrics.font.pixelSize * font.pixelSize
+
         horizontalAlignment: Text.AlignRight
-        anchors.left: showIcons ? downIcon.right : parent.left
-        anchors.leftMargin: showIcons ? margin : 0
+        verticalAlignment: Text.AlignVCenter
+        anchors.left: showIcons ? downIcon.right : offsetItem.right
+        anchors.leftMargin: showIcons ? font.pixelSize * marginFactor : 0
         y: 0
-        width: w
-        height: parent.height / 2
+
         text: downValue
-        font.pixelSize: fontPixelSize
+        font.pixelSize: height * fontSizeScale
         color: downColor
     }
-    
-    Text {
-        property double w: unitTextMetrics.width * textHeight * widthHack / unitTextMetrics.height
 
+    Text {
         id: downUnitText
+        clip: true
+
+        height: singleLine ? parent.height : parent.height / 2
+        width: unitTextMetrics.advanceWidth / unitTextMetrics.font.pixelSize * font.pixelSize
+
+        verticalAlignment: Text.AlignVCenter
         anchors.left: downText.right
-        anchors.leftMargin: margin
+        anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
-        width: w
-        height: parent.height / 2
+
         text: downUnit
-        font.pixelSize: fontPixelSize
+        font.pixelSize: height * fontSizeScale
         color: theme.textColor
         visible: showUnits
     }
-    
-    Text {
-        property double w: iconTextMetrics.width * textHeight * widthHack / iconTextMetrics.height
 
+    Text {
         id: upIcon
-        anchors.left: (singleLine && showUnits) ? downUnitText.right : (singleLine ? downText.right : parent.left)
-        anchors.leftMargin: singleLine ? margin : 0
+        clip: true
+
+        height: singleLine ? parent.height : parent.height / 2
+        width: iconTextMetrics.advanceWidth / iconTextMetrics.font.pixelSize * font.pixelSize
+
+        verticalAlignment: Text.AlignVCenter
+        anchors.left: (singleLine && showUnits) ? downUnitText.right : (singleLine ? downText.right : offsetItem.right)
+        anchors.leftMargin: singleLine ? font.pixelSize * marginFactor : 0
         y: singleLine ? 0 : parent.height / 2
-        width: w
-        height: parent.height / 2
+
         text: '↑'
-        font.pixelSize: fontPixelSize
+        font.pixelSize: height * fontSizeScale
         color: theme.textColor
         visible: showIcons
     }
-    
-    Text {
-        property double w: speedTextMetrics.width * textHeight * widthHack / speedTextMetrics.height
 
+    Text {
         id: upText
+        clip: true
+
+        height: singleLine ? parent.height : parent.height / 2
+        width: speedTextMetrics.advanceWidth / speedTextMetrics.font.pixelSize * font.pixelSize
+
         horizontalAlignment: Text.AlignRight
-        anchors.left: showIcons ? upIcon.right : ((singleLine && showUnits) ? downUnitText.right : (singleLine ? downText.right : parent.left))
-        anchors.leftMargin: singleLine || showIcons ? margin : 0
+        verticalAlignment: Text.AlignVCenter
+        anchors.left: showIcons ? upIcon.right : ((singleLine && showUnits) ? downUnitText.right : (singleLine ? downText.right : offsetItem.right))
+        anchors.leftMargin: (showIcons || singleLine) ? font.pixelSize * marginFactor : 0
         y: singleLine ? 0 : parent.height / 2
-        width: w
-        height: parent.height / 2
+
         text: upValue
-        font.pixelSize: fontPixelSize
+        font.pixelSize: height * fontSizeScale
         color: upColor
     }
-    
-    Text {
-        property double w: unitTextMetrics.width * textHeight * widthHack / unitTextMetrics.height
 
+    Text {
         id: upUnitText
+        clip: true
+
+        height: singleLine ? parent.height : parent.height / 2
+        width: unitTextMetrics.advanceWidth / unitTextMetrics.font.pixelSize * font.pixelSize
+
+        verticalAlignment: Text.AlignVCenter
         anchors.left: upText.right
-        anchors.leftMargin: margin
+        anchors.leftMargin: font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
-        width: w
-        height: parent.height / 2
+
         text: upUnit
-        font.pixelSize: fontPixelSize
+        font.pixelSize: height * fontSizeScale
         color: theme.textColor
         visible: showUnits
     }

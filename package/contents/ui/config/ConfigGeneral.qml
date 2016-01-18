@@ -22,13 +22,14 @@ Item {
     property alias cfg_showIcons: showIcons.checked
     property alias cfg_showUnits: showUnits.checked
     property string cfg_speedUnits: 'bytes'
+    property alias cfg_fontSize: fontSize.value
     property alias cfg_updateInterval: updateInterval.value
     property alias cfg_customColors: customColors.checked
     property alias cfg_byteColor: byteColorPicker.chosenColor
     property alias cfg_kilobyteColor: kilobyteColorPicker.chosenColor
     property alias cfg_megabyteColor: megabyteColorPicker.chosenColor
     property alias cfg_gigabyteColor: gigabyteColorPicker.chosenColor
-    
+
     GridLayout {
         columns: 2
 
@@ -37,18 +38,18 @@ Item {
             text: i18n('Show upload and download icons')
             Layout.columnSpan: 2
         }
-        
+
         CheckBox {
             id: showUnits
             text: i18n('Show speed units')
             Layout.columnSpan: 2
         }
-        
+
         Label {
             text: i18n('Speed units')
             enabled: showUnits.checked
         }
-        
+
         ComboBox {
             id: speedUnits
             enabled: showUnits.checked
@@ -73,18 +74,33 @@ Item {
                 }
             }
         }
-        
+
+        Label {
+            text: i18n('Font size')
+        }
+
+        SpinBox {
+            id: fontSize
+            minimumValue: 10
+            maximumValue: 200
+            decimals: 0
+            stepSize: 5
+            suffix: ' %'
+        }
+
         Label {
             text: i18n('Update interval')
         }
-        
+
         SpinBox {
             id: updateInterval
+            minimumValue: 0.1
+            maximumValue: 10
             decimals: 1
             stepSize: 0.1
             suffix: ' s'
         }
-        
+
         GroupBox {
             id: customColors
             title: "Custom colors"
@@ -93,7 +109,7 @@ Item {
 
             GridLayout {
                 columns: 2
-                
+
                 Label {
                     text: speedUnits.currentText === 'bits' ? 'b' : 'B'
                     Layout.alignment: Qt.AlignRight

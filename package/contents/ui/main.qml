@@ -23,6 +23,7 @@ Item {
     property bool showIcons: plasmoid.configuration.showIcons
     property bool showUnits: plasmoid.configuration.showUnits
     property string speedUnits: plasmoid.configuration.speedUnits
+    property var fontSizeScale: plasmoid.configuration.fontSize / 100
     property var updateInterval: plasmoid.configuration.updateInterval
     property bool customColors: plasmoid.configuration.customColors
     property var byteColor: plasmoid.configuration.byteColor
@@ -32,23 +33,23 @@ Item {
 
     property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
     property bool planar: (plasmoid.formFactor == PlasmaCore.Types.Planar)
-    
+
     property var downValue: '0.0'
     property var downColor: customColors ? byteColor : theme.textColor
     property var downUnit: speedUnits === 'bits' ? 'b' : 'B'
     property var upValue: '0.0'
     property var upColor: customColors ? byteColor : theme.textColor
     property var upUnit: speedUnits === 'bits' ? 'b' : 'B'
-    
+
     property var lastTimeActive: []
     property var totalData: []
 
     property string activeInterface: ''
     property var interfaceSwitchDelay: 3000
-    
+
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.compactRepresentation: CompactRepresentation {}
-    
+
     Component.onCompleted: {
         // trigger adding all sources already available
         for (var i in dataSource.sources) {
@@ -70,7 +71,7 @@ Item {
 
             if (match) {
                 connectSource(source)
-                
+
                 if (lastTimeActive[match[1]] === undefined) {
                     lastTimeActive[match[1]] = 0
                     totalData[match[1]] = {downTotal: 0, upTotal: 0}
@@ -78,13 +79,13 @@ Item {
                 }
             }
         }
-    
+
         onSourceRemoved: {
             var match = source.match(/^network\/interfaces\/(\w+)\/(receiver|transmitter)\/data(Total)?$/)
 
             if (match) {
                 disconnectSource(source);
-                
+
                 if (lastTimeActive[match[1]] !== undefined) {
                     delete lastTimeActive[match[1]]
                     delete totalData[match[1]]
@@ -97,9 +98,9 @@ Item {
             if (data.value === undefined) {
                 return
             }
-            
+
             var match = sourceName.match(/^network\/interfaces\/(\w+)\/(receiver|transmitter)\/data(Total)?$/)
-            
+
             if (match[3] === 'Total') {
                 var d = totalData
                 if (match[2] === 'receiver') {
@@ -117,16 +118,16 @@ Item {
                 if (activeInterface === '') {
                     activeInterface = match[1]
                 }
-                
+
                 if (data.value > 0) {
                     var currentTime = Date.now()
                     lastTimeActive[match[1]] = currentTime
-                    
+
                     if (activeInterface != match[1] && lastTimeActive[activeInterface] < currentTime - interfaceSwitchDelay) {
                         activeInterface = match[1]
                     }
                 }
-                
+
                 if (activeInterface == match[1]) {
                     if (sourceName.indexOf('receiver') != -1) {
                         var value = formatSpeed(data.value)
@@ -134,7 +135,7 @@ Item {
                         downUnit  = value.unit
                         downColor = value.color
                     }
-                    
+
                     if (sourceName.indexOf('transmitter') != -1) {
                         var value = formatSpeed(data.value)
                         upValue = value.value
@@ -145,7 +146,7 @@ Item {
             }
         }
     }
-    
+
     function formatSpeed(value) {
         var unit, color
         value = parseFloat(value)
@@ -195,7 +196,7 @@ Item {
         return {'value': value, 'unit': unit, 'color': color}
 //         return {'value': '1000.0', 'unit': speedUnits === 'bits' ? 'Mb' : 'MiB', 'color': theme.textColor}
     }
-    
+
     function formatValue(value) {
         var unit
         value = parseFloat(value)
