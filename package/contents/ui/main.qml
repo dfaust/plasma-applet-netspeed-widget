@@ -23,6 +23,7 @@ Item {
     property bool showIcons: plasmoid.configuration.showIcons
     property bool showUnits: plasmoid.configuration.showUnits
     property string speedUnits: plasmoid.configuration.speedUnits
+    property bool shortUnits: plasmoid.configuration.shortUnits
     property var fontSizeScale: plasmoid.configuration.fontSize / 100
     property var updateInterval: plasmoid.configuration.updateInterval
     property bool customColors: plasmoid.configuration.customColors
@@ -36,10 +37,22 @@ Item {
 
     property var downValue: '0.0'
     property var downColor: customColors ? byteColor : theme.textColor
-    property var downUnit: speedUnits === 'bits' ? 'b' : 'B'
+    property var downUnit: {
+        if (speedUnits === 'bits') {
+            return shortUnits ? '' : 'b'
+        } else {
+            return shortUnits ? '' : 'B'
+        }
+    }
     property var upValue: '0.0'
     property var upColor: customColors ? byteColor : theme.textColor
-    property var upUnit: speedUnits === 'bits' ? 'b' : 'B'
+    property var upUnit: {
+        if (speedUnits === 'bits') {
+            return shortUnits ? '' : 'b'
+        } else {
+            return shortUnits ? '' : 'B'
+        }
+    }
 
     property var lastTimeActive: []
     property var totalData: []
@@ -154,41 +167,41 @@ Item {
             value *= 8
             if (value >= 1000000) {
                 value /= 1000000
-                unit = 'Gb'
+                unit = shortUnits ? 'g' : 'Gb'
                 color = customColors ? gigabyteColor : theme.textColor
             }
             else if (value >= 1000) {
                 value /= 1000
-                unit = 'Mb'
+                unit = shortUnits ? 'm' : 'Mb'
                 color = customColors ? megabyteColor : theme.textColor
             }
             else if (value >= 1) {
-                unit = 'Kb'
+                unit = shortUnits ? 'k' : 'Kb'
                 color = customColors ? kilobyteColor : theme.textColor
             }
             else {
                 value *= 1024
-                unit = 'b'
+                unit = shortUnits ? '' : 'b'
                 color = customColors ? byteColor : theme.textColor
             }
         } else {
             if (value >= 1048576) {
                 value /= 1048576
-                unit = 'GiB'
+                unit = shortUnits ? 'G' : 'GiB'
                 color = customColors ? gigabyteColor : theme.textColor
             }
             else if (value >= 1024) {
                 value /= 1024
-                unit = 'MiB'
+                unit = shortUnits ? 'M' : 'MiB'
                 color = customColors ? megabyteColor : theme.textColor
             }
             else if (value >= 1) {
-                unit = 'KiB'
+                unit = shortUnits ? 'K' : 'KiB'
                 color = customColors ? kilobyteColor : theme.textColor
             }
             else {
                 value *= 1024
-                unit = 'B'
+                unit = shortUnits ? '' : 'B'
                 color = customColors ? byteColor : theme.textColor
             }
         }

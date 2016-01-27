@@ -22,6 +22,7 @@ Item {
     property alias cfg_showIcons: showIcons.checked
     property alias cfg_showUnits: showUnits.checked
     property string cfg_speedUnits: 'bytes'
+    property alias cfg_shortUnits: shortUnits.checked
     property alias cfg_fontSize: fontSize.value
     property alias cfg_updateInterval: updateInterval.value
     property alias cfg_customColors: customColors.checked
@@ -75,6 +76,13 @@ Item {
             }
         }
 
+        CheckBox {
+            id: shortUnits
+            text: i18n('Shortened speed units')
+            Layout.columnSpan: 2
+            enabled: showUnits.checked
+        }
+
         Label {
             text: i18n('Font size')
         }
@@ -111,7 +119,13 @@ Item {
                 columns: 2
 
                 Label {
-                    text: speedUnits.currentText === 'bits' ? 'b' : 'B'
+                    text: {
+                        if (speedUnits.currentText === 'bits') {
+                            return shortUnits.checked ? '' : 'b'
+                        } else {
+                            return shortUnits.checked ? '' : 'B'
+                        }
+                    }
                     Layout.alignment: Qt.AlignRight
                 }
 
@@ -120,7 +134,13 @@ Item {
                 }
 
                 Label {
-                    text: speedUnits.currentText === 'bits' ? 'kb' : 'KiB'
+                    text: {
+                        if (speedUnits.currentText === 'bits') {
+                            return shortUnits.checked ? 'k' : 'kb'
+                        } else {
+                            return shortUnits.checked ? 'K' : 'KiB'
+                        }
+                    }
                     Layout.alignment: Qt.AlignRight
                 }
 
@@ -129,7 +149,13 @@ Item {
                 }
 
                 Label {
-                    text: speedUnits.currentText === 'bits' ? 'Mb' : 'MiB'
+                    text: {
+                        if (speedUnits.currentText === 'bits') {
+                            return shortUnits.checked ? 'm' : 'Mb'
+                        } else {
+                            return shortUnits.checked ? 'M' : 'MiB'
+                        }
+                    }
                     Layout.alignment: Qt.AlignRight
                 }
 
@@ -138,7 +164,13 @@ Item {
                 }
 
                 Label {
-                    text: speedUnits.currentText === 'bits' ? 'Gb' : 'GiB'
+                    text: {
+                        if (speedUnits.currentText === 'bits') {
+                            return shortUnits.checked ? 'g' : 'Gb'
+                        } else {
+                            return shortUnits.checked ? 'G' : 'GiB'
+                        }
+                    }
                     Layout.alignment: Qt.AlignRight
                 }
 

@@ -117,7 +117,13 @@ Item {
 
     TextMetrics {
         id: unitTextMetrics
-        text: speedUnits === 'bits' ? 'Mb' : 'MiB'
+        text: {
+        if (speedUnits === 'bits') {
+            return shortUnits ? 'm' : 'Mb'
+        } else {
+            return shortUnits ? 'M' : 'MiB'
+        }
+    }
         font.pixelSize: 64
     }
 
