@@ -47,7 +47,7 @@ Item {
         }
 
         Label {
-            text: i18n('Speed units')
+            text: i18n('Speed units:')
             enabled: showUnits.checked
         }
 
@@ -57,34 +57,36 @@ Item {
             textRole: 'label'
             model: [
                 {
-                    'label': i18n('bits'),
-                    'name': 'bits'
+                    'label': i18n('Bits'),
+                    'type': 'bits'
                 },
                 {
-                    'label': i18n('bytes'),
-                    'name': 'bytes'
+                    'label': i18n('Bytes'),
+                    'type': 'bytes'
                 }
             ]
-            onCurrentIndexChanged: cfg_speedUnits = model[currentIndex]['name']
+            onCurrentIndexChanged: cfg_speedUnits = model[currentIndex]['type']
 
             Component.onCompleted: {
                 for (var i = 0; i < model.length; i++) {
-                    if (model[i]['name'] == plasmoid.configuration.speedUnits) {
+                    if (model[i]['type'] == plasmoid.configuration.speedUnits) {
                         speedUnits.currentIndex = i
                     }
                 }
             }
+
+            property string currentType: model[currentIndex]['type']
         }
 
         CheckBox {
             id: shortUnits
-            text: i18n('Shortened speed units')
+            text: i18n('Use shortened speed units')
             Layout.columnSpan: 2
             enabled: showUnits.checked
         }
 
         Label {
-            text: i18n('Font size')
+            text: i18n('Font size:')
         }
 
         SpinBox {
@@ -97,7 +99,7 @@ Item {
         }
 
         Label {
-            text: i18n('Update interval')
+            text: i18n('Update interval:')
         }
 
         SpinBox {
@@ -111,19 +113,21 @@ Item {
 
         GroupBox {
             id: customColors
-            title: "Custom colors"
+            title: 'Use custom colors'
             checkable: true
             Layout.columnSpan: 2
 
             GridLayout {
+                anchors.fill: parent
+                anchors.margins: units.smallSpacing
                 columns: 2
 
                 Label {
                     text: {
-                        if (speedUnits.currentText === 'bits') {
-                            return shortUnits.checked ? '' : 'b'
+                        if (speedUnits.currentType === 'bits') {
+                            return shortUnits.checked ? '' : 'b:'
                         } else {
-                            return shortUnits.checked ? '' : 'B'
+                            return shortUnits.checked ? '' : 'B:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
@@ -135,10 +139,10 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentText === 'bits') {
-                            return shortUnits.checked ? 'k' : 'kb'
+                        if (speedUnits.currentType === 'bits') {
+                            return shortUnits.checked ? 'k:' : 'kb:'
                         } else {
-                            return shortUnits.checked ? 'K' : 'KiB'
+                            return shortUnits.checked ? 'K:' : 'KiB:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
@@ -150,10 +154,10 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentText === 'bits') {
-                            return shortUnits.checked ? 'm' : 'Mb'
+                        if (speedUnits.currentType === 'bits') {
+                            return shortUnits.checked ? 'm:' : 'Mb:'
                         } else {
-                            return shortUnits.checked ? 'M' : 'MiB'
+                            return shortUnits.checked ? 'M:' : 'MiB:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
@@ -165,10 +169,10 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentText === 'bits') {
-                            return shortUnits.checked ? 'g' : 'Gb'
+                        if (speedUnits.currentType === 'bits') {
+                            return shortUnits.checked ? 'g:' : 'Gb:'
                         } else {
-                            return shortUnits.checked ? 'G' : 'GiB'
+                            return shortUnits.checked ? 'G:' : 'GiB:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
