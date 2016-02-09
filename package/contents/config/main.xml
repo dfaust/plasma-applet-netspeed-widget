@@ -26,7 +26,7 @@
         </entry>
 
         <entry name="fontSize" type="Int">
-            <default>80</default>
+            <default>100</default>
         </entry>
 
         <entry name="updateInterval" type="Double">

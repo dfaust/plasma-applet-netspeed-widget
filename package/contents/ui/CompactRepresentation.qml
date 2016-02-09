@@ -26,38 +26,34 @@ Item {
 
     property bool singleLine: height / 2 * fontSizeScale < theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical
 
-    property double iconWidth: showIcons ? iconTextMetrics.advanceWidth + iconTextMetrics.font.pixelSize * marginFactor : 0
-    property double speedWidth: speedTextMetrics.advanceWidth
-    property double unitWidth: showUnits ? unitTextMetrics.advanceWidth + unitTextMetrics.font.pixelSize * marginFactor : 0
     property double marginWidth: speedTextMetrics.font.pixelSize * marginFactor
+    property double iconWidth: showIcons ? iconTextMetrics.advanceWidth + marginWidth : 0
+    property double speedWidth: speedTextMetrics.advanceWidth
+    property double unitWidth: showUnits ? unitTextMetrics.advanceWidth + marginWidth : 0
 
     property double aspectRatio: {
         if (singleLine) {
-            return (2*iconWidth + 2*speedWidth + 2*unitWidth + 3*marginWidth) / speedTextMetrics.font.pixelSize
+            return (2*iconWidth + 2*speedWidth + 2*unitWidth + marginWidth) * fontSizeScale / speedTextMetrics.height
         } else {
-            if (plasmoid.formFactor != PlasmaCore.Types.Vertical) {
-                return (  iconWidth +   speedWidth +   unitWidth + 2*marginWidth) / speedTextMetrics.font.pixelSize
-            } else {
-                return (  iconWidth +   speedWidth +   unitWidth) / speedTextMetrics.font.pixelSize
-            }
+            return (iconWidth + speedWidth + unitWidth) * fontSizeScale / (2*speedTextMetrics.height)
         }
     }
+
+    property double fontHeightRatio: speedTextMetrics.font.pixelSize / speedTextMetrics.height
 
     property double lineHeight: {
-        if (plasmoid.formFactor != PlasmaCore.Types.Vertical) {
-            return singleLine ? height : height / 2
-        } else {
+        if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
             return width / aspectRatio / 2
+        } else {
+            return singleLine ? height : height / 2
         }
     }
 
-    property double fontPixelSize: lineHeight * fontSizeScale
-
     property double offset: {
-        if (plasmoid.formFactor != PlasmaCore.Types.Vertical) {
-            return fontPixelSize * 0.2
+        if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
+            return (width - height * aspectRatio) / 2
         } else {
-            return (width - fontPixelSize * aspectRatio * 2) / 2
+            return 0
         }
     }
 
@@ -65,14 +61,14 @@ Item {
         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
             return 0
         } else if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
-            return fontPixelSize * aspectRatio
+            return height * aspectRatio
         } else {
-            return fontPixelSize * aspectRatio
+            return height * aspectRatio
         }
     }
     Layout.minimumHeight: {
         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
-            return 2 * width / aspectRatio
+            return width / aspectRatio * fontSizeScale * fontSizeScale
         } else if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
             return 0
         } else {
@@ -140,14 +136,14 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: iconTextMetrics.advanceWidth / iconTextMetrics.font.pixelSize * font.pixelSize
+        width: iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: offsetItem.right
         y: 0
 
         text: '↓'
-        font.pixelSize: height * fontSizeScale
+        font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: theme.textColor
         visible: showIcons
     }
@@ -157,7 +153,7 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: speedTextMetrics.advanceWidth / speedTextMetrics.font.pixelSize * font.pixelSize
+        width: speedTextMetrics.advanceWidth / speedTextMetrics.height * height * fontSizeScale
 
         horizontalAlignment: Text.AlignRight
         verticalAlignment: Text.AlignVCenter
@@ -166,7 +162,7 @@ Item {
         y: 0
 
         text: downValue
-        font.pixelSize: height * fontSizeScale
+        font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: downColor
     }
 
@@ -175,7 +171,7 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: unitTextMetrics.advanceWidth / unitTextMetrics.font.pixelSize * font.pixelSize
+        width: unitTextMetrics.advanceWidth / unitTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: downText.right
@@ -183,7 +179,7 @@ Item {
         y: 0
 
         text: downUnit
-        font.pixelSize: height * fontSizeScale
+        font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: theme.textColor
         visible: showUnits
     }
@@ -193,7 +189,7 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: iconTextMetrics.advanceWidth / iconTextMetrics.font.pixelSize * font.pixelSize
+        width: iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: (singleLine && showUnits) ? downUnitText.right : (singleLine ? downText.right : offsetItem.right)
@@ -201,7 +197,7 @@ Item {
         y: singleLine ? 0 : parent.height / 2
 
         text: '↑'
-        font.pixelSize: height * fontSizeScale
+        font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: theme.textColor
         visible: showIcons
     }
@@ -211,7 +207,7 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: speedTextMetrics.advanceWidth / speedTextMetrics.font.pixelSize * font.pixelSize
+        width: speedTextMetrics.advanceWidth / speedTextMetrics.height * height * fontSizeScale
 
         horizontalAlignment: Text.AlignRight
         verticalAlignment: Text.AlignVCenter
@@ -220,7 +216,7 @@ Item {
         y: singleLine ? 0 : parent.height / 2
 
         text: upValue
-        font.pixelSize: height * fontSizeScale
+        font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: upColor
     }
 
@@ -229,7 +225,7 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: unitTextMetrics.advanceWidth / unitTextMetrics.font.pixelSize * font.pixelSize
+        width: unitTextMetrics.advanceWidth / unitTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: upText.right
@@ -237,7 +233,7 @@ Item {
         y: singleLine ? 0 : parent.height / 2
 
         text: upUnit
-        font.pixelSize: height * fontSizeScale
+        font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: theme.textColor
         visible: showUnits
     }
