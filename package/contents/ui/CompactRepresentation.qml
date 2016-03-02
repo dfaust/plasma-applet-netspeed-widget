@@ -113,9 +113,9 @@ Item {
         id: unitTextMetrics
         text: {
         if (speedUnits === 'bits') {
-            return shortUnits ? 'm' : 'Mb'
+            return shortUnits ? 'm' : 'Mb/s'
         } else {
-            return shortUnits ? 'M' : 'MiB'
+            return shortUnits ? 'M' : 'MiB/s'
         }
     }
         font.pixelSize: 64
@@ -344,29 +344,29 @@ Item {
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
             if (value >= 1000000) {
-                return shortUnits ? 'g' : 'Gb'
+                return shortUnits ? 'g' : 'Gb/s'
             }
             else if (value >= 1000) {
-                return shortUnits ? 'm' : 'Mb'
+                return shortUnits ? 'm' : 'Mb/s'
             }
             else if (value >= 1) {
-                return shortUnits ? 'k' : 'Kb'
+                return shortUnits ? 'k' : 'Kb/s'
             }
             else {
-                return shortUnits ? '' : 'b'
+                return shortUnits ? 'b' : 'b/s'
             }
         } else {
             if (value >= 1048576) {
-                return shortUnits ? 'G' : 'GiB'
+                return shortUnits ? 'G' : 'GiB/s'
             }
             else if (value >= 1024) {
-                return shortUnits ? 'M' : 'MiB'
+                return shortUnits ? 'M' : 'MiB/s'
             }
             else if (value >= 1) {
-                return shortUnits ? 'K' : 'KiB'
+                return shortUnits ? 'K' : 'KiB/s'
             }
             else {
-                return shortUnits ? '' : 'B'
+                return shortUnits ? 'B' : 'B/s'
             }
         }
     }

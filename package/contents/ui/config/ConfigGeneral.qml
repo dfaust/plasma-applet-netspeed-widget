@@ -34,26 +34,12 @@ Item {
     GridLayout {
         columns: 2
 
-        CheckBox {
-            id: showIcons
-            text: i18n('Show upload and download icons')
-            Layout.columnSpan: 2
-        }
-
-        CheckBox {
-            id: showUnits
-            text: i18n('Show speed units')
-            Layout.columnSpan: 2
-        }
-
         Label {
             text: i18n('Speed units:')
-            enabled: showUnits.checked
         }
 
         ComboBox {
             id: speedUnits
-            enabled: showUnits.checked
             textRole: 'label'
             model: [
                 {
@@ -79,10 +65,22 @@ Item {
         }
 
         CheckBox {
+            id: showUnits
+            text: i18n('Show speed units')
+            Layout.columnSpan: 2
+        }
+
+        CheckBox {
             id: shortUnits
             text: i18n('Use shortened speed units')
             Layout.columnSpan: 2
             enabled: showUnits.checked
+        }
+
+        CheckBox {
+            id: showIcons
+            text: i18n('Show upload and download icons')
+            Layout.columnSpan: 2
         }
 
         Label {
@@ -125,9 +123,9 @@ Item {
                 Label {
                     text: {
                         if (speedUnits.currentType === 'bits') {
-                            return shortUnits.checked ? '' : 'b:'
+                            return shortUnits.checked ? 'b' : 'b/s:'
                         } else {
-                            return shortUnits.checked ? '' : 'B:'
+                            return shortUnits.checked ? 'B' : 'B/s:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
@@ -140,9 +138,9 @@ Item {
                 Label {
                     text: {
                         if (speedUnits.currentType === 'bits') {
-                            return shortUnits.checked ? 'k:' : 'kb:'
+                            return shortUnits.checked ? 'k:' : 'kb/s:'
                         } else {
-                            return shortUnits.checked ? 'K:' : 'KiB:'
+                            return shortUnits.checked ? 'K:' : 'KiB/s:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
@@ -155,9 +153,9 @@ Item {
                 Label {
                     text: {
                         if (speedUnits.currentType === 'bits') {
-                            return shortUnits.checked ? 'm:' : 'Mb:'
+                            return shortUnits.checked ? 'm:' : 'Mb/s:'
                         } else {
-                            return shortUnits.checked ? 'M:' : 'MiB:'
+                            return shortUnits.checked ? 'M:' : 'MiB/s:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
@@ -170,9 +168,9 @@ Item {
                 Label {
                     text: {
                         if (speedUnits.currentType === 'bits') {
-                            return shortUnits.checked ? 'g:' : 'Gb:'
+                            return shortUnits.checked ? 'g:' : 'Gb/s:'
                         } else {
-                            return shortUnits.checked ? 'G:' : 'GiB:'
+                            return shortUnits.checked ? 'G:' : 'GiB/s:'
                         }
                     }
                     Layout.alignment: Qt.AlignRight
