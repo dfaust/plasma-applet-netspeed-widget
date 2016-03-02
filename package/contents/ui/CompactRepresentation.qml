@@ -85,15 +85,13 @@ Item {
         mainText: i18n('Network usage')
         subText: {
             var details = ''
-            for (var key in totalData) {
+            for (var key in speedData) {
                 if (details != '') {
                     details += '<br><br>'
                 }
 
-                var active = key === activeInterface ? ' (active)' : ''
-
-                details += '<b>' + key + active + '</b><br>'
-                details += 'Downloaded: <b>' + totalData[key].downTotal + '</b>, Uploaded: <b>' + totalData[key].upTotal + '</b>'
+                details += '<b>' + key + '</b><br>'
+                details += 'Downloaded: <b>' + totalText(speedData[key].downTotal) + '</b>, Uploaded: <b>' + totalText(speedData[key].upTotal) + '</b>'
             }
             return details
         }
@@ -160,10 +158,23 @@ Item {
         anchors.left: showIcons ? downIcon.right : offsetItem.right
         anchors.leftMargin: showIcons ? font.pixelSize * marginFactor : 0
         y: 0
-
-        text: downValue
         font.pixelSize: height * fontHeightRatio * fontSizeScale
-        color: downColor
+
+        text: {
+            var speed = 0
+            for (var key in speedData) {
+                speed += speedData[key].down
+            }
+            return speedText(speed)
+        }
+
+        color: {
+            var speed = 0
+            for (var key in speedData) {
+                speed += speedData[key].down
+            }
+            return speedColor(speed)
+        }
     }
 
     Text {
@@ -178,7 +189,14 @@ Item {
         anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
 
-        text: downUnit
+        text: {
+            var speed = 0
+            for (var key in speedData) {
+                speed += speedData[key].down
+            }
+            return speedUnit(speed)
+        }
+
         font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: theme.textColor
         visible: showUnits
@@ -214,10 +232,23 @@ Item {
         anchors.left: showIcons ? upIcon.right : ((singleLine && showUnits) ? downUnitText.right : (singleLine ? downText.right : offsetItem.right))
         anchors.leftMargin: (showIcons || singleLine) ? font.pixelSize * marginFactor : 0
         y: singleLine ? 0 : parent.height / 2
-
-        text: upValue
         font.pixelSize: height * fontHeightRatio * fontSizeScale
-        color: upColor
+
+        text: {
+            var speed = 0
+            for (var key in speedData) {
+                speed += speedData[key].up
+            }
+            return speedText(speed)
+        }
+
+        color: {
+            var speed = 0
+            for (var key in speedData) {
+                speed += speedData[key].up
+            }
+            return speedColor(speed)
+        }
     }
 
     Text {
@@ -232,9 +263,132 @@ Item {
         anchors.leftMargin: font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
 
-        text: upUnit
+        text: {
+            var speed = 0
+            for (var key in speedData) {
+                speed += speedData[key].up
+            }
+            return speedUnit(speed)
+        }
+
         font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: theme.textColor
         visible: showUnits
+    }
+
+    function speedText(value) {
+        value = parseFloat(value)
+        if (speedUnits === 'bits') {
+            value *= 8 * 1.024
+            if (value >= 1000000) {
+                value /= 1000000
+            }
+            else if (value >= 1000) {
+                value /= 1000
+            }
+            else if (value < 1) {
+                value *= 1000
+            }
+        } else {
+            if (value >= 1048576) {
+                value /= 1048576
+            }
+            else if (value >= 1024) {
+                value /= 1024
+            }
+            else if (value < 1) {
+                value *= 1024
+            }
+        }
+        return value.toFixed(1)
+    }
+
+    function speedColor(value) {
+        if (!customColors) {
+            return theme.textColor
+        }
+
+        value = parseFloat(value)
+        if (speedUnits === 'bits') {
+            value *= 8 * 1.024
+            if (value >= 1000000) {
+                return gigabyteColor
+            }
+            else if (value >= 1000) {
+                return megabyteColor
+            }
+            else if (value >= 1) {
+                return kilobyteColor
+            }
+            else {
+                return byteColor
+            }
+        } else {
+            if (value >= 1048576) {
+                return gigabyteColor
+            }
+            else if (value >= 1024) {
+                return megabyteColor
+            }
+            else if (value >= 1) {
+                return kilobyteColor
+            }
+            else {
+                return byteColor
+            }
+        }
+    }
+
+    function speedUnit(value) {
+        value = parseFloat(value)
+        if (speedUnits === 'bits') {
+            value *= 8 * 1.024
+            if (value >= 1000000) {
+                return shortUnits ? 'g' : 'Gb'
+            }
+            else if (value >= 1000) {
+                return shortUnits ? 'm' : 'Mb'
+            }
+            else if (value >= 1) {
+                return shortUnits ? 'k' : 'Kb'
+            }
+            else {
+                return shortUnits ? '' : 'b'
+            }
+        } else {
+            if (value >= 1048576) {
+                return shortUnits ? 'G' : 'GiB'
+            }
+            else if (value >= 1024) {
+                return shortUnits ? 'M' : 'MiB'
+            }
+            else if (value >= 1) {
+                return shortUnits ? 'K' : 'KiB'
+            }
+            else {
+                return shortUnits ? '' : 'B'
+            }
+        }
+    }
+
+    function totalText(value) {
+        var unit
+        value = parseFloat(value)
+        if (value >= 1048576) {
+            value /= 1048576
+            unit = 'GiB'
+        }
+        else if (value >= 1024) {
+            value /= 1024
+            unit = 'MiB'
+        }
+        else if (value >= 1) {
+            unit = 'KiB'
+        }
+        else {
+            value *= 1024
+            unit = 'B'
+        }
+        return value.toFixed(1) + ' ' + unit
     }
 }

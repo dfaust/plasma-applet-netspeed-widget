@@ -54,11 +54,7 @@ Item {
         }
     }
 
-    property var lastTimeActive: []
-    property var totalData: []
-
-    property string activeInterface: ''
-    property var interfaceSwitchDelay: 3000
+    property var speedData: []
 
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.compactRepresentation: CompactRepresentation {}
@@ -85,9 +81,7 @@ Item {
             if (match) {
                 connectSource(source)
 
-                if (lastTimeActive[match[1]] === undefined) {
-                    lastTimeActive[match[1]] = 0
-                    totalData[match[1]] = {downTotal: 0, upTotal: 0}
+                if (speedData[match[1]] === undefined) {
                     console.log('Network interface added: ' + match[1])
                 }
             }
@@ -99,9 +93,8 @@ Item {
             if (match) {
                 disconnectSource(source);
 
-                if (lastTimeActive[match[1]] !== undefined) {
-                    delete lastTimeActive[match[1]]
-                    delete totalData[match[1]]
+                if (speedData[match[1]] !== undefined) {
+                    delete speedData[match[1]]
                     console.log('Network interface removed: ' + source[1])
                 }
             }
@@ -114,120 +107,36 @@ Item {
 
             var match = sourceName.match(/^network\/interfaces\/(\w+)\/(receiver|transmitter)\/data(Total)?$/)
 
+            if (speedData[match[1]] === undefined) {
+                speedData[match[1]] = {down: 0, up: 0, downTotal: 0, upTotal: 0}
+            }
+
+            var d = speedData
+            var changed = false
+
             if (match[3] === 'Total') {
-                var d = totalData
-                if (match[2] === 'receiver') {
-                    if (d[match[1]] !== undefined) {
-                        d[match[1]].downTotal = formatValue(data.value)
-                    }
+                if (match[2] === 'receiver'    && d[match[1]].downTotal != data.value) {
+                    d[match[1]].downTotal = data.value
+                    changed = true
                 }
-                if (match[2] === 'transmitter') {
-                    if (d[match[1]] !== undefined) {
-                        d[match[1]].upTotal = formatValue(data.value)
-                    }
+                if (match[2] === 'transmitter' && d[match[1]].upTotal != data.value) {
+                    d[match[1]].upTotal = data.value
+                    changed = true
                 }
-                totalData = d
             } else {
-                if (activeInterface === '') {
-                    activeInterface = match[1]
+                if (match[2] === 'receiver'    && d[match[1]].down != data.value) {
+                    d[match[1]].down = data.value
+                    changed = true
                 }
-
-                if (data.value > 0) {
-                    var currentTime = Date.now()
-                    lastTimeActive[match[1]] = currentTime
-
-                    if (activeInterface != match[1] && lastTimeActive[activeInterface] < currentTime - interfaceSwitchDelay) {
-                        activeInterface = match[1]
-                    }
-                }
-
-                if (activeInterface == match[1]) {
-                    if (sourceName.indexOf('receiver') != -1) {
-                        var value = formatSpeed(data.value)
-                        downValue = value.value
-                        downUnit  = value.unit
-                        downColor = value.color
-                    }
-
-                    if (sourceName.indexOf('transmitter') != -1) {
-                        var value = formatSpeed(data.value)
-                        upValue = value.value
-                        upUnit  = value.unit
-                        upColor = value.color
-                    }
+                if (match[2] === 'transmitter' && d[match[1]].up != data.value) {
+                    d[match[1]].up = data.value
+                    changed = true
                 }
             }
-        }
-    }
 
-    function formatSpeed(value) {
-        var unit, color
-        value = parseFloat(value)
-        if (speedUnits === 'bits') {
-            value *= 8
-            if (value >= 1000000) {
-                value /= 1000000
-                unit = shortUnits ? 'g' : 'Gb'
-                color = customColors ? gigabyteColor : theme.textColor
-            }
-            else if (value >= 1000) {
-                value /= 1000
-                unit = shortUnits ? 'm' : 'Mb'
-                color = customColors ? megabyteColor : theme.textColor
-            }
-            else if (value >= 1) {
-                unit = shortUnits ? 'k' : 'Kb'
-                color = customColors ? kilobyteColor : theme.textColor
-            }
-            else {
-                value *= 1024
-                unit = shortUnits ? '' : 'b'
-                color = customColors ? byteColor : theme.textColor
-            }
-        } else {
-            if (value >= 1048576) {
-                value /= 1048576
-                unit = shortUnits ? 'G' : 'GiB'
-                color = customColors ? gigabyteColor : theme.textColor
-            }
-            else if (value >= 1024) {
-                value /= 1024
-                unit = shortUnits ? 'M' : 'MiB'
-                color = customColors ? megabyteColor : theme.textColor
-            }
-            else if (value >= 1) {
-                unit = shortUnits ? 'K' : 'KiB'
-                color = customColors ? kilobyteColor : theme.textColor
-            }
-            else {
-                value *= 1024
-                unit = shortUnits ? '' : 'B'
-                color = customColors ? byteColor : theme.textColor
+            if (changed) {
+                speedData = d
             }
         }
-        value = value.toFixed(1)
-        return {'value': value, 'unit': unit, 'color': color}
-//         return {'value': '1000.0', 'unit': speedUnits === 'bits' ? 'Mb' : 'MiB', 'color': theme.textColor}
-    }
-
-    function formatValue(value) {
-        var unit
-        value = parseFloat(value)
-        if (value >= 1048576) {
-            value /= 1048576
-            unit = 'GiB'
-        }
-        else if (value >= 1024) {
-            value /= 1024
-            unit = 'MiB'
-        }
-        else if (value >= 1) {
-            unit = 'KiB'
-        }
-        else {
-            value *= 1024
-            unit = 'B'
-        }
-        return value.toFixed(1) + ' ' + unit
     }
 }
