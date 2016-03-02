@@ -1,6 +1,7 @@
-1.3:
+1.3 (2016.03.03):
 Show combined network speed for all devices
 Display proper (long) speed units
+Show download and upload speed separately config option
 
 1.2 (2016.02.09):
 Layout fixes

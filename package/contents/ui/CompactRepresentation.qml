@@ -24,18 +24,39 @@ Item {
 
     property double marginFactor: 0.2
 
-    property bool singleLine: height / 2 * fontSizeScale < theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical
+    property var downSpeed: {
+        var speed = 0
+        for (var key in speedData) {
+            speed += speedData[key].down
+        }
+        return speed
+    }
+
+    property var upSpeed: {
+        var speed = 0
+        for (var key in speedData) {
+            speed += speedData[key].up
+        }
+        return speed
+    }
+
+    property bool singleLine: (height / 2 * fontSizeScale < theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical) || !showSeparately
 
     property double marginWidth: speedTextMetrics.font.pixelSize * marginFactor
     property double iconWidth: showIcons ? iconTextMetrics.advanceWidth + marginWidth : 0
+    property double doubleIconWidth: showIcons ? 2*iconTextMetrics.advanceWidth + marginWidth : 0
     property double speedWidth: speedTextMetrics.advanceWidth
     property double unitWidth: showUnits ? unitTextMetrics.advanceWidth + marginWidth : 0
 
     property double aspectRatio: {
-        if (singleLine) {
-            return (2*iconWidth + 2*speedWidth + 2*unitWidth + marginWidth) * fontSizeScale / speedTextMetrics.height
+        if (showSeparately) {
+            if (singleLine) {
+                return (2*iconWidth + 2*speedWidth + 2*unitWidth + marginWidth) * fontSizeScale / speedTextMetrics.height
+            } else {
+                return (iconWidth + speedWidth + unitWidth) * fontSizeScale / (2*speedTextMetrics.height)
+            }
         } else {
-            return (iconWidth + speedWidth + unitWidth) * fontSizeScale / (2*speedTextMetrics.height)
+            return (doubleIconWidth + speedWidth + unitWidth) * fontSizeScale / speedTextMetrics.height
         }
     }
 
@@ -134,14 +155,14 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale
+        width: showSeparately ? iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale : iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale * 2
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: offsetItem.right
         y: 0
-
-        text: '↓'
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+
+        text: showSeparately ? '↓' : '↓↑'
         color: theme.textColor
         visible: showIcons
     }
@@ -160,21 +181,8 @@ Item {
         y: 0
         font.pixelSize: height * fontHeightRatio * fontSizeScale
 
-        text: {
-            var speed = 0
-            for (var key in speedData) {
-                speed += speedData[key].down
-            }
-            return speedText(speed)
-        }
-
-        color: {
-            var speed = 0
-            for (var key in speedData) {
-                speed += speedData[key].down
-            }
-            return speedColor(speed)
-        }
+        text: speedText(showSeparately ? downSpeed : downSpeed + upSpeed)
+        color: speedColor(showSeparately ? downSpeed : downSpeed + upSpeed)
     }
 
     Text {
@@ -188,16 +196,9 @@ Item {
         anchors.left: downText.right
         anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
-
-        text: {
-            var speed = 0
-            for (var key in speedData) {
-                speed += speedData[key].down
-            }
-            return speedUnit(speed)
-        }
-
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+
+        text: speedUnit(showSeparately ? downSpeed : downSpeed + upSpeed)
         color: theme.textColor
         visible: showUnits
     }
@@ -213,11 +214,11 @@ Item {
         anchors.left: (singleLine && showUnits) ? downUnitText.right : (singleLine ? downText.right : offsetItem.right)
         anchors.leftMargin: singleLine ? font.pixelSize * marginFactor : 0
         y: singleLine ? 0 : parent.height / 2
+        font.pixelSize: height * fontHeightRatio * fontSizeScale
 
         text: '↑'
-        font.pixelSize: height * fontHeightRatio * fontSizeScale
         color: theme.textColor
-        visible: showIcons
+        visible: showSeparately && showIcons
     }
 
     Text {
@@ -234,21 +235,9 @@ Item {
         y: singleLine ? 0 : parent.height / 2
         font.pixelSize: height * fontHeightRatio * fontSizeScale
 
-        text: {
-            var speed = 0
-            for (var key in speedData) {
-                speed += speedData[key].up
-            }
-            return speedText(speed)
-        }
-
-        color: {
-            var speed = 0
-            for (var key in speedData) {
-                speed += speedData[key].up
-            }
-            return speedColor(speed)
-        }
+        text: speedText(upSpeed)
+        color: speedColor(upSpeed)
+        visible: showSeparately
     }
 
     Text {
@@ -262,22 +251,14 @@ Item {
         anchors.left: upText.right
         anchors.leftMargin: font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
-
-        text: {
-            var speed = 0
-            for (var key in speedData) {
-                speed += speedData[key].up
-            }
-            return speedUnit(speed)
-        }
-
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+
+        text: speedUnit(upSpeed)
         color: theme.textColor
-        visible: showUnits
+        visible: showSeparately && showUnits
     }
 
     function speedText(value) {
-        value = parseFloat(value)
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
             if (value >= 1000000) {
@@ -308,7 +289,6 @@ Item {
             return theme.textColor
         }
 
-        value = parseFloat(value)
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
             if (value >= 1000000) {
@@ -340,7 +320,6 @@ Item {
     }
 
     function speedUnit(value) {
-        value = parseFloat(value)
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
             if (value >= 1000000) {
@@ -373,7 +352,6 @@ Item {
 
     function totalText(value) {
         var unit
-        value = parseFloat(value)
         if (value >= 1048576) {
             value /= 1048576
             unit = 'GiB'

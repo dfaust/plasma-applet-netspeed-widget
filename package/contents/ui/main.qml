@@ -113,23 +113,24 @@ Item {
 
             var d = speedData
             var changed = false
+            var value = parseFloat(data.value)
 
             if (match[3] === 'Total') {
-                if (match[2] === 'receiver'    && d[match[1]].downTotal != data.value) {
-                    d[match[1]].downTotal = data.value
+                if (match[2] === 'receiver'    && d[match[1]].downTotal != value) {
+                    d[match[1]].downTotal = value
                     changed = true
                 }
-                if (match[2] === 'transmitter' && d[match[1]].upTotal != data.value) {
-                    d[match[1]].upTotal = data.value
+                if (match[2] === 'transmitter' && d[match[1]].upTotal != value) {
+                    d[match[1]].upTotal = value
                     changed = true
                 }
             } else {
-                if (match[2] === 'receiver'    && d[match[1]].down != data.value) {
-                    d[match[1]].down = data.value
+                if (match[2] === 'receiver'    && d[match[1]].down != value) {
+                    d[match[1]].down = value
                     changed = true
                 }
-                if (match[2] === 'transmitter' && d[match[1]].up != data.value) {
-                    d[match[1]].up = data.value
+                if (match[2] === 'transmitter' && d[match[1]].up != value) {
+                    d[match[1]].up = value
                     changed = true
                 }
             }

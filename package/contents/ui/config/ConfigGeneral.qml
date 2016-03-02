@@ -19,6 +19,7 @@ import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 
 Item {
+    property alias cfg_showSeparately: showSeparately.checked
     property alias cfg_showIcons: showIcons.checked
     property alias cfg_showUnits: showUnits.checked
     property string cfg_speedUnits: 'bytes'
@@ -80,6 +81,12 @@ Item {
         CheckBox {
             id: showIcons
             text: i18n('Show upload and download icons')
+            Layout.columnSpan: 2
+        }
+
+        CheckBox {
+            id: showSeparately
+            text: i18n('Show download and upload speed separately')
             Layout.columnSpan: 2
         }
 
