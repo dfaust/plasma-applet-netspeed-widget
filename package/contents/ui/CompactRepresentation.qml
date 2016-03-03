@@ -17,6 +17,7 @@
 import QtQuick 2.5
 import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
+import org.kde.kio 1.0 as Kio
 
 Item {
     anchors.fill: parent
@@ -142,6 +143,16 @@ Item {
         font.pixelSize: 64
     }
 
+    PlasmaCore.DataSource {
+        id: appsSource
+        engine: 'apps'
+        connectedSources: launchApplication
+    }
+
+    Kio.KRun {
+        id: kRun
+    }
+
     Item {
         id: offsetItem
         width: offset
@@ -256,6 +267,17 @@ Item {
         text: speedUnit(upSpeed)
         color: theme.textColor
         visible: showSeparately && showUnits
+    }
+
+    MouseArea {
+        anchors.fill: parent
+        enabled: launchApplicationEnabled
+
+        onClicked: {
+            if (appsSource.data[launchApplication]) {
+                kRun.openUrl(appsSource.data[launchApplication].entryPath)
+            }
+        }
     }
 
     function speedText(value) {

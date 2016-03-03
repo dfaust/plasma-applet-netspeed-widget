@@ -2,6 +2,7 @@
 Show combined network speed for all devices
 Display proper (long) speed units
 Show download and upload speed separately config option
+Launch user defined application when clicked
 
 1.2 (2016.02.09):
 Layout fixes

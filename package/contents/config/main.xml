@@ -50,4 +50,13 @@
         </entry>
     </group>
 
+    <group name="Advanced">
+        <entry name="launchApplicationEnabled" type="Bool">
+            <default>false</default>
+        </entry>
+        <entry name="launchApplication" type="String">
+            <default></default>
+        </entry>
+    </group>
+
 </kcfg>
