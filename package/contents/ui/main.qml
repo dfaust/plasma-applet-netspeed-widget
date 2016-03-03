@@ -24,35 +24,16 @@ Item {
     property bool showUnits: plasmoid.configuration.showUnits
     property string speedUnits: plasmoid.configuration.speedUnits
     property bool shortUnits: plasmoid.configuration.shortUnits
-    property var fontSizeScale: plasmoid.configuration.fontSize / 100
-    property var updateInterval: plasmoid.configuration.updateInterval
+    property double fontSizeScale: plasmoid.configuration.fontSize / 100
+    property double updateInterval: plasmoid.configuration.updateInterval
     property bool customColors: plasmoid.configuration.customColors
-    property var byteColor: plasmoid.configuration.byteColor
-    property var kilobyteColor: plasmoid.configuration.kilobyteColor
-    property var megabyteColor: plasmoid.configuration.megabyteColor
-    property var gigabyteColor: plasmoid.configuration.gigabyteColor
+    property color byteColor: plasmoid.configuration.byteColor
+    property color kilobyteColor: plasmoid.configuration.kilobyteColor
+    property color megabyteColor: plasmoid.configuration.megabyteColor
+    property color gigabyteColor: plasmoid.configuration.gigabyteColor
 
-    property bool vertical: (plasmoid.formFactor == PlasmaCore.Types.Vertical)
-    property bool planar: (plasmoid.formFactor == PlasmaCore.Types.Planar)
-
-    property var downValue: '0.0'
-    property var downColor: customColors ? byteColor : theme.textColor
-    property var downUnit: {
-        if (speedUnits === 'bits') {
-            return shortUnits ? '' : 'b'
-        } else {
-            return shortUnits ? '' : 'B'
-        }
-    }
-    property var upValue: '0.0'
-    property var upColor: customColors ? byteColor : theme.textColor
-    property var upUnit: {
-        if (speedUnits === 'bits') {
-            return shortUnits ? '' : 'b'
-        } else {
-            return shortUnits ? '' : 'B'
-        }
-    }
+    property bool launchApplicationEnabled: plasmoid.configuration.launchApplicationEnabled
+    property string launchApplication: plasmoid.configuration.launchApplication
 
     property var speedData: []
 

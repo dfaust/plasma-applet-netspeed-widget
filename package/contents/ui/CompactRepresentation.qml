@@ -24,7 +24,7 @@ Item {
 
     property double marginFactor: 0.2
 
-    property var downSpeed: {
+    property double downSpeed: {
         var speed = 0
         for (var key in speedData) {
             speed += speedData[key].down
@@ -32,7 +32,7 @@ Item {
         return speed
     }
 
-    property var upSpeed: {
+    property double upSpeed: {
         var speed = 0
         for (var key in speedData) {
             speed += speedData[key].up
