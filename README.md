@@ -5,10 +5,10 @@ Based on the [Plasma 4 widget](http://kde-apps.org/content/show.php/netspeed-pla
 
 ![Screen shot of plasma-applet-netspeed-widget](netspeed-widget.png)
 
-# Depends on
+## Depends on
 plasma-framework-devel
 
-# Installation
+## Installation
 ```
 git clone https://github.com/HessiJames/plasma-applet-netspeed-widget
 cd plasma-applet-netspeed-widget
