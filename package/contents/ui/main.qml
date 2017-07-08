@@ -34,6 +34,8 @@ Item {
 
     property bool launchApplicationEnabled: plasmoid.configuration.launchApplicationEnabled
     property string launchApplication: plasmoid.configuration.launchApplication
+    property bool interfacesWhitelistEnabled: plasmoid.configuration.interfacesWhitelistEnabled
+    property var interfacesWhitelist: plasmoid.configuration.interfacesWhitelist
 
     property var speedData: []
 

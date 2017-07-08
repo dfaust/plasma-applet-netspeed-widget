@@ -28,6 +28,9 @@ Item {
     property double downSpeed: {
         var speed = 0
         for (var key in speedData) {
+            if (interfacesWhitelistEnabled && interfacesWhitelist.indexOf(key) === -1) {
+                continue
+            }
             speed += speedData[key].down
         }
         return speed
@@ -36,6 +39,9 @@ Item {
     property double upSpeed: {
         var speed = 0
         for (var key in speedData) {
+            if (interfacesWhitelistEnabled && interfacesWhitelist.indexOf(key) === -1) {
+                continue
+            }
             speed += speedData[key].up
         }
         return speed
@@ -108,6 +114,10 @@ Item {
         subText: {
             var details = ''
             for (var key in speedData) {
+                if (interfacesWhitelistEnabled && interfacesWhitelist.indexOf(key) === -1) {
+                    continue
+                }
+
                 if (details != '') {
                     details += '<br><br>'
                 }
@@ -134,12 +144,12 @@ Item {
     TextMetrics {
         id: unitTextMetrics
         text: {
-        if (speedUnits === 'bits') {
-            return shortUnits ? 'm' : 'Mb/s'
-        } else {
-            return shortUnits ? 'M' : 'MiB/s'
+            if (speedUnits === 'bits') {
+                return shortUnits ? 'm' : 'Mb/s'
+            } else {
+                return shortUnits ? 'M' : 'MiB/s'
+            }
         }
-    }
         font.pixelSize: 64
     }
 
