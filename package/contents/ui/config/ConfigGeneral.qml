@@ -20,7 +20,7 @@ import QtQuick.Layouts 1.1
 
 Item {
     property alias cfg_showSeparately: showSeparately.checked
-    property alias cfg_swapDownUp: swapDownUp.checked
+    property alias cfg_swapDownUp: displayOrderUp.checked
     property alias cfg_showIcons: showIcons.checked
     property alias cfg_showUnits: showUnits.checked
     property string cfg_speedUnits: 'bytes'
@@ -35,6 +35,26 @@ Item {
 
     GridLayout {
         columns: 2
+
+        GroupBox {
+            title: i18n('Display order')
+            Layout.columnSpan: 2
+
+            ColumnLayout {
+                ExclusiveGroup { id: displayOrderGroup }
+                RadioButton {
+                    id: displayOrderUp
+                    text: i18n('Show upload speed at the top')
+                    exclusiveGroup: displayOrderGroup
+                }
+                RadioButton {
+                    id: displayOrderDown
+                    text: i18n('Show download speed at the top')
+                    checked: !displayOrderUp.checked
+                    exclusiveGroup: displayOrderGroup
+                }
+            }
+        }
 
         Label {
             text: i18n('Speed units:')
@@ -88,12 +108,6 @@ Item {
         CheckBox {
             id: showSeparately
             text: i18n('Show download and upload speed separately')
-            Layout.columnSpan: 2
-        }
-
-        CheckBox {
-            id: swapDownUp
-            text: i18n('Swap download and upload display order')
             Layout.columnSpan: 2
         }
 
