@@ -52,7 +52,7 @@ Item {
     property double marginWidth: speedTextMetrics.font.pixelSize * marginFactor
     property double iconWidth: showIcons ? iconTextMetrics.advanceWidth + marginWidth : 0
     property double doubleIconWidth: showIcons ? 2*iconTextMetrics.advanceWidth + marginWidth : 0
-    property double speedWidth: speedTextMetrics.advanceWidth
+    property double speedWidth: speedTextMetrics.advanceWidth + 2*marginWidth
     property double unitWidth: showUnits ? unitTextMetrics.advanceWidth + marginWidth : 0
 
     property double aspectRatio: {
@@ -176,10 +176,11 @@ Item {
         clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: showSeparately ? iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale : iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale * 2
+        width: (showSeparately ? 1 : 2) * iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: offsetItem.right
+        anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
         font.pixelSize: height * fontHeightRatio * fontSizeScale
 
@@ -198,7 +199,7 @@ Item {
         horizontalAlignment: Text.AlignRight
         verticalAlignment: Text.AlignVCenter
         anchors.left: showIcons ? topIcon.right : offsetItem.right
-        anchors.leftMargin: showIcons ? font.pixelSize * marginFactor : 0
+        anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
         font.pixelSize: height * fontHeightRatio * fontSizeScale
 
@@ -233,7 +234,7 @@ Item {
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: (singleLine && showUnits) ? topUnitText.right : (singleLine ? topText.right : offsetItem.right)
-        anchors.leftMargin: singleLine ? font.pixelSize * marginFactor : 0
+        anchors.leftMargin: (singleLine ? 2 : 1) * font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
         font.pixelSize: height * fontHeightRatio * fontSizeScale
 
@@ -252,7 +253,7 @@ Item {
         horizontalAlignment: Text.AlignRight
         verticalAlignment: Text.AlignVCenter
         anchors.left: showIcons ? bottomIcon.right : ((singleLine && showUnits) ? topUnitText.right : (singleLine ? topText.right : offsetItem.right))
-        anchors.leftMargin: (showIcons || singleLine) ? font.pixelSize * marginFactor : 0
+        anchors.leftMargin: font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
         font.pixelSize: height * fontHeightRatio * fontSizeScale
 
