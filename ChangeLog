@@ -1,5 +1,5 @@
-unreleased
-Improve margins
+1.6 (2019.01.31):
+Improve margins and disable clipping
 
 1.5 (2018.08.06):
 Add config option to change upload and download display order
