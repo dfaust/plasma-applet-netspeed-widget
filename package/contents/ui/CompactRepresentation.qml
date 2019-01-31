@@ -21,7 +21,6 @@ import org.kde.kio 1.0 as Kio
 
 Item {
     anchors.fill: parent
-    clip: true
 
     property double marginFactor: 0.2
 
@@ -50,10 +49,10 @@ Item {
     property bool singleLine: (height / 2 * fontSizeScale < theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical) || !showSeparately
 
     property double marginWidth: speedTextMetrics.font.pixelSize * marginFactor
-    property double iconWidth: showIcons ? iconTextMetrics.advanceWidth + marginWidth : 0
-    property double doubleIconWidth: showIcons ? 2*iconTextMetrics.advanceWidth + marginWidth : 0
-    property double speedWidth: speedTextMetrics.advanceWidth + 2*marginWidth
-    property double unitWidth: showUnits ? unitTextMetrics.advanceWidth + marginWidth : 0
+    property double iconWidth: showIcons ? iconTextMetrics.width + marginWidth : 0
+    property double doubleIconWidth: showIcons ? (doubleIconTextMetrics.width + marginWidth) : 0
+    property double speedWidth: speedTextMetrics.width + 2*marginWidth
+    property double unitWidth: showUnits ? unitTextMetrics.width + marginWidth : 0
 
     property double aspectRatio: {
         if (showSeparately) {
@@ -89,18 +88,18 @@ Item {
         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
             return 0
         } else if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
-            return height * aspectRatio
+            return Math.ceil(height * aspectRatio)
         } else {
-            return height * aspectRatio
+            return Math.ceil(height * aspectRatio)
         }
     }
     Layout.minimumHeight: {
         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
-            return width / aspectRatio * fontSizeScale * fontSizeScale
+            return Math.ceil(width / aspectRatio * fontSizeScale * fontSizeScale)
         } else if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
             return 0
         } else {
-            return theme.smallestFont.pixelSize / fontSizeScale
+            return Math.ceil(theme.smallestFont.pixelSize / fontSizeScale)
         }
     }
 
@@ -132,6 +131,12 @@ Item {
     TextMetrics {
         id: iconTextMetrics
         text: '↓'
+        font.pixelSize: 64
+    }
+
+    TextMetrics {
+        id: doubleIconTextMetrics
+        text: '↓↑'
         font.pixelSize: 64
     }
 
@@ -173,10 +178,9 @@ Item {
 
     Text {
         id: topIcon
-        clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: (showSeparately ? 1 : 2) * iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale
+        width: (showSeparately ? 1 : 2) * iconTextMetrics.width / iconTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: offsetItem.right
@@ -191,10 +195,9 @@ Item {
 
     Text {
         id: topText
-        clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: speedTextMetrics.advanceWidth / speedTextMetrics.height * height * fontSizeScale
+        width: speedTextMetrics.width / speedTextMetrics.height * height * fontSizeScale
 
         horizontalAlignment: Text.AlignRight
         verticalAlignment: Text.AlignVCenter
@@ -209,10 +212,9 @@ Item {
 
     Text {
         id: topUnitText
-        clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: unitTextMetrics.advanceWidth / unitTextMetrics.height * height * fontSizeScale
+        width: unitTextMetrics.width / unitTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: topText.right
@@ -227,10 +229,9 @@ Item {
 
     Text {
         id: bottomIcon
-        clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: iconTextMetrics.advanceWidth / iconTextMetrics.height * height * fontSizeScale
+        width: iconTextMetrics.width / iconTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: (singleLine && showUnits) ? topUnitText.right : (singleLine ? topText.right : offsetItem.right)
@@ -245,10 +246,9 @@ Item {
 
     Text {
         id: bottomText
-        clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: speedTextMetrics.advanceWidth / speedTextMetrics.height * height * fontSizeScale
+        width: speedTextMetrics.width / speedTextMetrics.height * height * fontSizeScale
 
         horizontalAlignment: Text.AlignRight
         verticalAlignment: Text.AlignVCenter
@@ -264,10 +264,9 @@ Item {
 
     Text {
         id: bottomUnitText
-        clip: true
 
         height: singleLine ? parent.height : parent.height / 2
-        width: unitTextMetrics.advanceWidth / unitTextMetrics.height * height * fontSizeScale
+        width: unitTextMetrics.width / unitTextMetrics.height * height * fontSizeScale
 
         verticalAlignment: Text.AlignVCenter
         anchors.left: bottomText.right
