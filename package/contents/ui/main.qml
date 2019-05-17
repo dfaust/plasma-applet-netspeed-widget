@@ -20,6 +20,7 @@ import org.kde.plasma.core 2.0 as PlasmaCore
 
 Item {
     property bool showSeparately: plasmoid.configuration.showSeparately
+    property string speedLayout: plasmoid.configuration.speedLayout
     property bool swapDownUp: plasmoid.configuration.swapDownUp
     property bool showIcons: plasmoid.configuration.showIcons
     property bool showUnits: plasmoid.configuration.showUnits

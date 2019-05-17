@@ -46,7 +46,16 @@ Item {
         return speed
     }
 
-    property bool singleLine: (height / 2 * fontSizeScale < theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical) || !showSeparately
+    property bool singleLine: {
+        if (!showSeparately) {
+            return true
+        }
+        switch (speedLayout) {
+            case 'rows': return false
+            case 'columns': return true
+            default: return height / 2 * fontSizeScale < theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical
+        }
+    }
 
     property double marginWidth: speedTextMetrics.font.pixelSize * marginFactor
     property double iconWidth: showIcons ? iconTextMetrics.width + marginWidth : 0

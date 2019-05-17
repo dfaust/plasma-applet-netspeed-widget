@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.1
 
 Item {
     property alias cfg_showSeparately: showSeparately.checked
+    property string cfg_speedLayout: 'auto'
     property alias cfg_swapDownUp: displayOrderUp.checked
     property alias cfg_showIcons: showIcons.checked
     property alias cfg_showUnits: showUnits.checked
@@ -57,6 +58,38 @@ Item {
         }
 
         Label {
+            text: i18n('Layout:')
+        }
+
+        ComboBox {
+            id: speedLayout
+            textRole: 'label'
+            model: [
+                {
+                    'label': i18n('Automatic'),
+                    'value': 'auto'
+                },
+                {
+                    'label': i18n('One above the other'),
+                    'value': 'rows'
+                },
+                {
+                    'label': i18n('Side by side'),
+                    'value': 'columns'
+                }
+            ]
+            onCurrentIndexChanged: cfg_speedLayout = model[currentIndex]['value']
+
+            Component.onCompleted: {
+                for (var i = 0; i < model.length; i++) {
+                    if (model[i]['value'] == plasmoid.configuration.speedLayout) {
+                        speedLayout.currentIndex = i
+                    }
+                }
+            }
+        }
+
+        Label {
             text: i18n('Speed units:')
         }
 
@@ -66,24 +99,24 @@ Item {
             model: [
                 {
                     'label': i18n('Bits'),
-                    'type': 'bits'
+                    'value': 'bits'
                 },
                 {
                     'label': i18n('Bytes'),
-                    'type': 'bytes'
+                    'value': 'bytes'
                 }
             ]
-            onCurrentIndexChanged: cfg_speedUnits = model[currentIndex]['type']
+            onCurrentIndexChanged: cfg_speedUnits = model[currentIndex]['value']
 
             Component.onCompleted: {
                 for (var i = 0; i < model.length; i++) {
-                    if (model[i]['type'] == plasmoid.configuration.speedUnits) {
+                    if (model[i]['value'] == plasmoid.configuration.speedUnits) {
                         speedUnits.currentIndex = i
                     }
                 }
             }
 
-            property string currentType: model[currentIndex]['type']
+            property string currentValue: model[currentIndex]['value']
         }
 
         CheckBox {
@@ -150,7 +183,7 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentType === 'bits') {
+                        if (speedUnits.currentValue === 'bits') {
                             return shortUnits.checked ? 'b' : 'b/s:'
                         } else {
                             return shortUnits.checked ? 'B' : 'B/s:'
@@ -165,7 +198,7 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentType === 'bits') {
+                        if (speedUnits.currentValue === 'bits') {
                             return shortUnits.checked ? 'k:' : 'kb/s:'
                         } else {
                             return shortUnits.checked ? 'K:' : 'KiB/s:'
@@ -180,7 +213,7 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentType === 'bits') {
+                        if (speedUnits.currentValue === 'bits') {
                             return shortUnits.checked ? 'm:' : 'Mb/s:'
                         } else {
                             return shortUnits.checked ? 'M:' : 'MiB/s:'
@@ -195,7 +228,7 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentType === 'bits') {
+                        if (speedUnits.currentValue === 'bits') {
                             return shortUnits.checked ? 'g:' : 'Gb/s:'
                         } else {
                             return shortUnits.checked ? 'G:' : 'GiB/s:'
