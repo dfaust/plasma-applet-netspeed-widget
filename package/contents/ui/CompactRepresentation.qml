@@ -77,14 +77,6 @@ Item {
 
     property double fontHeightRatio: speedTextMetrics.font.pixelSize / speedTextMetrics.height
 
-    property double lineHeight: {
-        if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
-            return width / aspectRatio / 2
-        } else {
-            return singleLine ? height : height / 2
-        }
-    }
-
     property double offset: {
         if (plasmoid.formFactor === PlasmaCore.Types.Vertical) {
             return (width - height * aspectRatio) / 2
