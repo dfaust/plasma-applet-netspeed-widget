@@ -17,7 +17,7 @@
 import QtQuick 2.5
 import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.kio 1.0 as Kio
+import org.kde.plasma.private.quicklaunch 1.0
 
 Item {
     anchors.fill: parent
@@ -165,7 +165,7 @@ Item {
         connectedSources: launchApplication
     }
 
-    Kio.KRun {
+    Logic {
         id: kRun
     }
 
@@ -286,7 +286,7 @@ Item {
 
         onClicked: {
             if (appsSource.data[launchApplication]) {
-                kRun.openUrl(appsSource.data[launchApplication].entryPath)
+                kRun.openUrl("file:" + appsSource.data[launchApplication].entryPath)
             }
         }
     }
