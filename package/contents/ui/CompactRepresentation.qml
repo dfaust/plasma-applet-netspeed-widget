@@ -188,6 +188,7 @@ Item {
         anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+        renderType: Text.NativeRendering
 
         text: showSeparately ? (swapDownUp ? '↑' : '↓') : '↓↑'
         color: theme.textColor
@@ -206,6 +207,7 @@ Item {
         anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+        renderType: Text.NativeRendering
 
         text: speedText(showSeparately ? (swapDownUp ? upSpeed : downSpeed) : downSpeed + upSpeed)
         color: speedColor(showSeparately ? (swapDownUp ? upSpeed : downSpeed) : downSpeed + upSpeed)
@@ -222,6 +224,7 @@ Item {
         anchors.leftMargin: font.pixelSize * marginFactor
         y: 0
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+        renderType: Text.NativeRendering
 
         text: speedUnit(showSeparately ? (swapDownUp ? upSpeed : downSpeed) : downSpeed + upSpeed)
         color: theme.textColor
@@ -239,6 +242,7 @@ Item {
         anchors.leftMargin: (singleLine ? 2 : 1) * font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+        renderType: Text.NativeRendering
 
         text: swapDownUp ? '↓' : '↑'
         color: theme.textColor
@@ -257,6 +261,7 @@ Item {
         anchors.leftMargin: font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+        renderType: Text.NativeRendering
 
         text: speedText(swapDownUp ? downSpeed : upSpeed)
         color: speedColor(swapDownUp ? downSpeed : upSpeed)
@@ -274,6 +279,7 @@ Item {
         anchors.leftMargin: font.pixelSize * marginFactor
         y: singleLine ? 0 : parent.height / 2
         font.pixelSize: height * fontHeightRatio * fontSizeScale
+        renderType: Text.NativeRendering
 
         text: speedUnit(swapDownUp ? downSpeed : upSpeed)
         color: theme.textColor
