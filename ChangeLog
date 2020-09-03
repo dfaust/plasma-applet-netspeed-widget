@@ -1,4 +1,4 @@
-unreleased:
+1.9 (2020.09.03):
 Use native text rendering
 Make quicklaunch an optional dependency
 
