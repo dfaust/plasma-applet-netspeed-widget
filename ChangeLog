@@ -1,5 +1,6 @@
 unreleased:
 Use native text rendering
+Make quicklaunch an optional dependency
 
 1.8 (2019.10.06):
 Fix launching application on KF5 5.61.0 and above

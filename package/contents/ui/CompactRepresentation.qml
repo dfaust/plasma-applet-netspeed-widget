@@ -17,7 +17,6 @@
 import QtQuick 2.5
 import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.private.quicklaunch 1.0
 
 Item {
     anchors.fill: parent
@@ -165,8 +164,9 @@ Item {
         connectedSources: launchApplication
     }
 
-    Logic {
-        id: kRun
+    Loader {
+        id: 'launcher'
+        source: 'Launcher.qml'
     }
 
     Item {
@@ -291,8 +291,8 @@ Item {
         enabled: launchApplicationEnabled
 
         onClicked: {
-            if (appsSource.data[launchApplication]) {
-                kRun.openUrl("file:" + appsSource.data[launchApplication].entryPath)
+            if (launcher.item && appsSource.data[launchApplication]) {
+                launcher.item.launch("file:" + appsSource.data[launchApplication].entryPath)
             }
         }
     }

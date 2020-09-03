@@ -25,6 +25,11 @@ Item {
     property alias cfg_interfacesWhitelistEnabled: interfacesWhitelistEnabled.checked
     property var cfg_interfacesWhitelist: []
 
+    Loader {
+        id: 'launcher'
+        source: '../Launcher.qml'
+    }
+
     PlasmaCore.DataSource {
         id: dataSource
         engine: 'systemmonitor'
@@ -40,11 +45,18 @@ Item {
         CheckBox {
             id: launchApplicationEnabled
             text: i18n('Launch application when clicked:')
+            enabled: launcher.item != null
         }
 
         AppPicker {
             id: launchApplication
-            enabled: launchApplicationEnabled.checked
+            enabled: launcher.item != null && launchApplicationEnabled.checked
+        }
+
+        Text {
+            text: i18n('If you want to lauch an application,\nyou need to install the package plasma-addons first.')
+            visible: launcher.item == null
+            Layout.columnSpan: 2
         }
 
         CheckBox {

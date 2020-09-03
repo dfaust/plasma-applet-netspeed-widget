@@ -4,9 +4,11 @@ Plasma 5 widget that displays the currently used network bandwidth.
 
 ![Screen shot of plasma-applet-netspeed-widget](netspeed-widget.png)
 
-Dependencies:
+Optional dependencies:
 
 * plasma-addons
+
+  May be called plasma5-addons or similar. Used to launch a user defined application when the applet is clicked.
 
 ## Installation
 
