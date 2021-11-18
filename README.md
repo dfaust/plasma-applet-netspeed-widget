@@ -41,3 +41,4 @@ sudo make install
 Dependencies:
 
 * plasma-framework-devel
+* ksysguard
