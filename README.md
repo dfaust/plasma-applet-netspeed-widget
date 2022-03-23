@@ -2,7 +2,13 @@
 
 Plasma 5 widget that displays the currently used network bandwidth.
 
+**Important: Starting with Plasma 5.22 you may need to manually install the package `ksysguard`.**
+
 ![Screen shot of plasma-applet-netspeed-widget](netspeed-widget.png)
+
+Dependencies:
+
+* ksysguard
 
 Optional dependencies:
 
@@ -42,5 +48,6 @@ sudo make install
 
 Dependencies:
 
+* cmake
+* extra-cmake-modules
 * plasma-framework-devel
-* ksysguard
