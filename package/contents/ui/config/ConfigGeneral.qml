@@ -20,6 +20,7 @@ import QtQuick.Layouts 1.1
 
 Item {
     property alias cfg_showSeparately: showSeparately.checked
+    property alias cfg_showLowSpeeds: showLowSpeeds.checked
     property string cfg_speedLayout: 'auto'
     property bool cfg_swapDownUp: false
     property alias cfg_showIcons: showIcons.checked
@@ -50,7 +51,7 @@ Item {
                     'value': 'auto'
                 },
                 {
-                    'label': i18n('One above the other'),
+                    'label': i18n('Above each other'),
                     'value': 'rows'
                 },
                 {
@@ -149,6 +150,12 @@ Item {
         CheckBox {
             id: showSeparately
             text: i18n('Show download and upload speed separately')
+            Layout.columnSpan: 2
+        }
+
+        CheckBox {
+            id: showLowSpeeds
+            text: i18n('Show speeds below 1 kb/s')
             Layout.columnSpan: 2
         }
 

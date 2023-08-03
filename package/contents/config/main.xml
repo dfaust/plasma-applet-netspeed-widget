@@ -9,6 +9,9 @@
         <entry name="showSeparately" type="Bool">
             <default>true</default>
         </entry>
+        <entry name="showLowSpeeds" type="Bool">
+            <default>false</default>
+        </entry>
         <entry name="speedLayout" type="String">
             <default>auto</default>
         </entry>

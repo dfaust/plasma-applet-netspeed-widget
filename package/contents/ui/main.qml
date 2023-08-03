@@ -21,6 +21,7 @@ import "../code/utils.js" as Utils
 
 Item {
     property bool showSeparately: plasmoid.configuration.showSeparately
+    property bool showLowSpeeds: plasmoid.configuration.showLowSpeeds
     property string speedLayout: plasmoid.configuration.speedLayout
     property bool swapDownUp: plasmoid.configuration.swapDownUp
     property bool showIcons: plasmoid.configuration.showIcons

@@ -209,7 +209,7 @@ Item {
         font.pixelSize: height * fontHeightRatio * fontSizeScale
         renderType: Text.NativeRendering
 
-        text: speedText(showSeparately ? (swapDownUp ? upSpeed : downSpeed) : downSpeed + upSpeed)
+        text: speedText(showSeparately ? (swapDownUp ? upSpeed : downSpeed) : downSpeed + upSpeed, showLowSpeeds)
         color: speedColor(showSeparately ? (swapDownUp ? upSpeed : downSpeed) : downSpeed + upSpeed)
     }
 
@@ -263,7 +263,7 @@ Item {
         font.pixelSize: height * fontHeightRatio * fontSizeScale
         renderType: Text.NativeRendering
 
-        text: speedText(swapDownUp ? downSpeed : upSpeed)
+        text: speedText(swapDownUp ? downSpeed : upSpeed, showLowSpeeds)
         color: speedColor(swapDownUp ? downSpeed : upSpeed)
         visible: showSeparately
     }
@@ -297,7 +297,7 @@ Item {
         }
     }
 
-    function speedText(value) {
+    function speedText(value, showLowSpeeds) {
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
             if (value >= 1000000000) {
@@ -309,6 +309,9 @@ Item {
             else if (value >= 1000) {
                 value /= 1000
             }
+            else if (!showLowSpeeds) {
+                value = 0
+            }
         } else {
             if (value >= 1073741824) {
                 value /= 1073741824
@@ -318,6 +321,9 @@ Item {
             }
             else if (value >= 1024) {
                 value /= 1024
+            }
+            else if (!showLowSpeeds) {
+                value = 0
             }
         }
         return value.toFixed(1)
