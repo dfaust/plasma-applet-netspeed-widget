@@ -17,6 +17,7 @@
 import QtQuick 2.2
 import org.kde.plasma.plasmoid 2.0
 import org.kde.plasma.core 2.0 as PlasmaCore
+import "../code/utils.js" as Utils
 
 Item {
     property bool showSeparately: plasmoid.configuration.showSeparately
@@ -39,89 +40,31 @@ Item {
     property bool interfacesWhitelistEnabled: plasmoid.configuration.interfacesWhitelistEnabled
     property var interfacesWhitelist: plasmoid.configuration.interfacesWhitelist
 
-    property var speedData: []
+    property var transferDataTs: 0
+    property var transferData: {}
+    property var speedData: {}
 
     Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
     Plasmoid.compactRepresentation: CompactRepresentation {}
 
-    Component.onCompleted: {
-        // trigger adding all sources already available
-        for (var i in dataSource.sources) {
-            dataSource.sourceAdded(dataSource.sources[i]);
-        }
-    }
-
     PlasmaCore.DataSource {
         id: dataSource
-        engine: 'systemmonitor'
+        engine: 'executable'
+        connectedSources: [Utils.NET_DATA_SOURCE]
         interval: updateInterval * 1000
 
-        onSourceAdded: {
-            if (source.indexOf('network/interfaces/lo/') !== -1) {
-                return;
-            }
-
-            var match = source.match(/^network\/interfaces\/(\w+)\/(receiver|transmitter)\/data(Total)?$/)
-
-            if (match) {
-                connectSource(source)
-
-                if (speedData[match[1]] === undefined) {
-                    console.log('Network interface added: ' + match[1])
-                }
-            }
-        }
-
-        onSourceRemoved: {
-            var match = source.match(/^network\/interfaces\/(\w+)\/(receiver|transmitter)\/data(Total)?$/)
-
-            if (match) {
-                disconnectSource(source);
-
-                if (speedData[match[1]] !== undefined) {
-                    delete speedData[match[1]]
-                    console.log('Network interface removed: ' + source[1])
-                }
-            }
-        }
-
         onNewData: {
-            if (data.value === undefined) {
-                return
-            }
-
-            var match = sourceName.match(/^network\/interfaces\/(\w+)\/(receiver|transmitter)\/data(Total)?$/)
-
-            if (speedData[match[1]] === undefined) {
-                speedData[match[1]] = {down: 0, up: 0, downTotal: 0, upTotal: 0}
-            }
-
-            var d = speedData
-            var changed = false
-            var value = parseFloat(data.value)
-
-            if (match[3] === 'Total') {
-                if (match[2] === 'receiver'    && d[match[1]].downTotal != value) {
-                    d[match[1]].downTotal = value
-                    changed = true
-                }
-                if (match[2] === 'transmitter' && d[match[1]].upTotal != value) {
-                    d[match[1]].upTotal = value
-                    changed = true
-                }
+            if (data['exit code'] > 0) {
+                print(data.stderr)
             } else {
-                if (match[2] === 'receiver'    && d[match[1]].down != value) {
-                    d[match[1]].down = value
-                    changed = true
-                }
-                if (match[2] === 'transmitter' && d[match[1]].up != value) {
-                    d[match[1]].up = value
-                    changed = true
-                }
-            }
+                const now = Date.now()
+                const duration = now - transferDataTs
+                const nextTransferData = Utils.parseTransferData(data.stdout)
 
-            if (changed) {
-                speedData = d
+                speedData = Utils.calcSpeedData(transferData, nextTransferData, duration)
+
+                transferDataTs = now
+                transferData = nextTransferData
             }
         }
     }

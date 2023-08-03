@@ -300,24 +300,24 @@ Item {
     function speedText(value) {
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
-            if (value >= 1000000) {
+            if (value >= 1000000000) {
+                value /= 1000000000
+            }
+            else if (value >= 1000000) {
                 value /= 1000000
             }
             else if (value >= 1000) {
                 value /= 1000
             }
-            else if (value < 1) {
-                value *= 1000
-            }
         } else {
-            if (value >= 1048576) {
+            if (value >= 1073741824) {
+                value /= 1073741824
+            }
+            else if (value >= 1048576) {
                 value /= 1048576
             }
             else if (value >= 1024) {
                 value /= 1024
-            }
-            else if (value < 1) {
-                value *= 1024
             }
         }
         return value.toFixed(1)
@@ -330,26 +330,26 @@ Item {
 
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
-            if (value >= 1000000) {
+            if (value >= 1000000000) {
                 return gigabyteColor
             }
-            else if (value >= 1000) {
+            else if (value >= 1000000) {
                 return megabyteColor
             }
-            else if (value >= 1) {
+            else if (value >= 1000) {
                 return kilobyteColor
             }
             else {
                 return byteColor
             }
         } else {
-            if (value >= 1048576) {
+            if (value >= 1073741824) {
                 return gigabyteColor
             }
-            else if (value >= 1024) {
+            else if (value >= 1048576) {
                 return megabyteColor
             }
-            else if (value >= 1) {
+            else if (value >= 1024) {
                 return kilobyteColor
             }
             else {
@@ -361,26 +361,26 @@ Item {
     function speedUnit(value) {
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
-            if (value >= 1000000) {
+            if (value >= 1000000000) {
                 return shortUnits ? 'g' : 'Gb/s'
             }
-            else if (value >= 1000) {
+            else if (value >= 1000000) {
                 return shortUnits ? 'm' : 'Mb/s'
             }
-            else if (value >= 1) {
+            else if (value >= 1000) {
                 return shortUnits ? 'k' : 'Kb/s'
             }
             else {
                 return shortUnits ? 'b' : 'b/s'
             }
         } else {
-            if (value >= 1048576) {
+            if (value >= 1073741824) {
                 return shortUnits ? 'G' : 'GiB/s'
             }
-            else if (value >= 1024) {
+            else if (value >= 1048576) {
                 return shortUnits ? 'M' : 'MiB/s'
             }
-            else if (value >= 1) {
+            else if (value >= 1024) {
                 return shortUnits ? 'K' : 'KiB/s'
             }
             else {
@@ -391,19 +391,19 @@ Item {
 
     function totalText(value) {
         var unit
-        if (value >= 1048576) {
-            value /= 1048576
+        if (value >= 1073741824) {
+            value /= 1073741824
             unit = 'GiB'
+        }
+        else if (value >= 1048576) {
+            value /= 1048576
+            unit = 'MiB'
         }
         else if (value >= 1024) {
             value /= 1024
-            unit = 'MiB'
-        }
-        else if (value >= 1) {
             unit = 'KiB'
         }
         else {
-            value *= 1024
             unit = 'B'
         }
         return value.toFixed(1) + ' ' + unit

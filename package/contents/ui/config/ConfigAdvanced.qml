@@ -18,6 +18,7 @@ import QtQuick 2.2
 import QtQuick.Controls 1.3
 import QtQuick.Layouts 1.1
 import org.kde.plasma.core 2.0 as PlasmaCore
+import "../../code/utils.js" as Utils
 
 Item {
     property alias cfg_launchApplicationEnabled: launchApplicationEnabled.checked
@@ -32,7 +33,33 @@ Item {
 
     PlasmaCore.DataSource {
         id: dataSource
-        engine: 'systemmonitor'
+        engine: 'executable'
+        connectedSources: [Utils.NET_DATA_SOURCE]
+
+        onNewData: {
+            // run just once
+            connectedSources.length = 0
+
+            if (data['exit code'] > 0) {
+                print(data.stderr)
+            } else {
+                const transferData = Utils.parseTransferData(data.stdout)
+
+                interfacesWhitelist.model.clear()
+
+                for (const name of plasmoid.configuration.interfacesWhitelist) {
+                    interfacesWhitelist.model.append({ name, shown: true })
+                }
+
+                for (var name in transferData) {
+                    if (plasmoid.configuration.interfacesWhitelist.indexOf(name) !== -1) {
+                        continue
+                    }
+
+                    interfacesWhitelist.model.append({ name, shown: false })
+                }
+            }
+        }
     }
 
     ListModel {
@@ -89,7 +116,6 @@ Item {
 
                     delegate: Item {
                         id: interfaceItem
-                        width: parent.width
                         height: units.iconSizes.smallMedium + 2*units.smallSpacing
 
                         property bool isHovered: false
@@ -112,38 +138,7 @@ Item {
                             }
                         }
                     }
-
-                    Component.onCompleted: {
-                        listInterfaces()
-                    }
                 }
-            }
-        }
-    }
-
-    function listInterfaces() {
-        for (var i in plasmoid.configuration.interfacesWhitelist) {
-            interfacesWhitelist.model.append({name: plasmoid.configuration.interfacesWhitelist[i], shown: true})
-        }
-
-        sources_loop:
-        for (var i in dataSource.sources) {
-            var source = dataSource.sources[i]
-
-            if (source.indexOf('network/interfaces/lo/') !== -1) {
-                continue
-            }
-
-            var match = source.match(/^network\/interfaces\/(\w+)\/(receiver|transmitter)\/data$/)
-
-            if (match) {
-                for (var i=0; i<interfacesWhitelist.model.count; i++) {
-                    if (interfacesWhitelist.model.get(i).name == match[1]) {
-                        continue sources_loop
-                    }
-                }
-
-                interfacesWhitelist.model.append({name: match[1], shown: false})
             }
         }
     }
