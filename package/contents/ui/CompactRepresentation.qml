@@ -300,11 +300,11 @@ Item {
     function speedText(value, showLowSpeeds) {
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
-            if (value >= 1000000000) {
-                value /= 1000000000
+            if (value >= 1000 * 1000 * 1000) {
+                value /= 1000 * 1000 * 1000
             }
-            else if (value >= 1000000) {
-                value /= 1000000
+            else if (value >= 1000 * 1000) {
+                value /= 1000 * 1000
             }
             else if (value >= 1000) {
                 value /= 1000
@@ -313,20 +313,20 @@ Item {
                 value = 0
             }
         } else {
-            if (value >= 1073741824) {
-                value /= 1073741824
+            if (value >= 1000 * 1024 * 1024) {
+                value /= 1024 * 1024 * 1024
             }
-            else if (value >= 1048576) {
-                value /= 1048576
+            else if (value >= 1000 * 1024) {
+                value /= 1024 * 1024
             }
-            else if (value >= 1024) {
+            else if (value >= 1000) {
                 value /= 1024
             }
             else if (!showLowSpeeds) {
                 value = 0
             }
         }
-        return value.toFixed(1)
+        return (Math.round(value * 10) / 10).toFixed(1)
     }
 
     function speedColor(value) {
@@ -336,10 +336,10 @@ Item {
 
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
-            if (value >= 1000000000) {
+            if (value >= 1000 * 1000 * 1000) {
                 return gigabyteColor
             }
-            else if (value >= 1000000) {
+            else if (value >= 1000 * 1000) {
                 return megabyteColor
             }
             else if (value >= 1000) {
@@ -349,13 +349,13 @@ Item {
                 return byteColor
             }
         } else {
-            if (value >= 1073741824) {
+            if (value >= 1000 * 1024 * 1024) {
                 return gigabyteColor
             }
-            else if (value >= 1048576) {
+            else if (value >= 1000 * 1024) {
                 return megabyteColor
             }
-            else if (value >= 1024) {
+            else if (value >= 1000) {
                 return kilobyteColor
             }
             else {
@@ -367,10 +367,10 @@ Item {
     function speedUnit(value) {
         if (speedUnits === 'bits') {
             value *= 8 * 1.024
-            if (value >= 1000000000) {
+            if (value >= 1000 * 1000 * 1000) {
                 return shortUnits ? 'g' : 'Gb/s'
             }
-            else if (value >= 1000000) {
+            else if (value >= 1000 * 1000) {
                 return shortUnits ? 'm' : 'Mb/s'
             }
             else if (value >= 1000) {
@@ -380,13 +380,13 @@ Item {
                 return shortUnits ? 'b' : 'b/s'
             }
         } else {
-            if (value >= 1073741824) {
+            if (value >= 1000 * 1024 * 1024) {
                 return shortUnits ? 'G' : 'GiB/s'
             }
-            else if (value >= 1048576) {
+            else if (value >= 1000 * 1024) {
                 return shortUnits ? 'M' : 'MiB/s'
             }
-            else if (value >= 1024) {
+            else if (value >= 1000) {
                 return shortUnits ? 'K' : 'KiB/s'
             }
             else {
@@ -397,12 +397,12 @@ Item {
 
     function totalText(value) {
         var unit
-        if (value >= 1073741824) {
-            value /= 1073741824
+        if (value >= 1024 * 1024 * 1024) {
+            value /= 1024 * 1024 * 1024
             unit = 'GiB'
         }
-        else if (value >= 1048576) {
-            value /= 1048576
+        else if (value >= 1024 * 1024) {
+            value /= 1024 * 1024
             unit = 'MiB'
         }
         else if (value >= 1024) {
@@ -412,6 +412,6 @@ Item {
         else {
             unit = 'B'
         }
-        return value.toFixed(1) + ' ' + unit
+        return (Math.round(value * 10) / 10).toFixed(1) + ' ' + unit
     }
 }
