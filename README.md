@@ -12,9 +12,7 @@ Dependencies:
 
 Optional dependencies:
 
-* plasma-addons
-
-  May be called plasma5-addons or similar. Used to launch a user defined application when the applet is clicked.
+* awk
 
 ## Installation
 
@@ -39,15 +37,5 @@ Optional dependencies:
 ```bash
 git clone https://github.com/dfaust/plasma-applet-netspeed-widget
 cd plasma-applet-netspeed-widget
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=/usr ..
-make
-sudo make install
+./install.sh
 ```
-
-Dependencies:
-
-* cmake
-* extra-cmake-modules
-* plasma-framework-devel

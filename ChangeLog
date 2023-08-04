@@ -1,3 +1,8 @@
+2.0 (2023.08.04):
+Use "/proc/net/dev" as data source
+Add "show low speeds" config option
+Limit values to three pre-decimal point digits
+
 1.9 (2020.09.03):
 Use native text rendering
 Make quicklaunch an optional dependency
