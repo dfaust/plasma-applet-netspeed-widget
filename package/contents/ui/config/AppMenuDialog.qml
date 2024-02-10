@@ -14,24 +14,26 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http: //www.gnu.org/licenses/>.
  */
-import QtQuick 2.2
-import QtQuick.Layouts 1.1
-import QtQuick.Dialogs 1.2
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
-import org.kde.plasma.extras 2.0 as PlasmaExtras
+import QtQuick
+import QtQuick.Layouts
+import QtQuick.Dialogs
+import QtQuick.Controls
+import org.kde.kirigami as Kirigami
+import org.kde.plasma.plasma5support as Plasma5Support
+import org.kde.plasma.components as PlasmaComponents
+import org.kde.plasma.extras as PlasmaExtras
 
 Dialog {
     id: appMenuDialog
     title: i18n('Choose an application')
-    standardButtons: StandardButton.Cancel
+    standardButtons: Dialog.Cancel
 
     width: 300
     height: 400
 
     property string selectedMenuId: ''
 
-    PlasmaCore.DataSource {
+    Plasma5Support.DataSource {
         id: appsSource
         engine: 'apps'
         connectedSources: sources
@@ -41,9 +43,9 @@ Dialog {
         id: appsModel
     }
 
-    PlasmaExtras.ScrollArea {
+    PlasmaComponents.ScrollView {
         width: parent.width
-        height: 400
+        height: parent.height
 
         ListView {
             id: apps
@@ -52,13 +54,13 @@ Dialog {
 
             model: appsModel
 
-            highlight: PlasmaComponents.Highlight {}
+            highlight: PlasmaExtras.Highlight {}
             highlightMoveDuration: 0
             highlightResizeDuration: 0
 
             delegate: Item {
-                width: parent.width
-                height: units.iconSizes.small + 2*units.smallSpacing
+                width: apps.width - 20
+                height: Kirigami.Units.iconSizes.small + 2*Kirigami.Units.smallSpacing
 
                 property bool isHovered: false
 
@@ -80,18 +82,14 @@ Dialog {
                     }
 
                     RowLayout {
-                        x: units.smallSpacing
-                        y: units.smallSpacing
+                        x: Kirigami.Units.smallSpacing
+                        y: Kirigami.Units.smallSpacing
 
-                        Item { // Hack - since setting the dimensions of PlasmaCore.IconItem won't work
-                            height: units.iconSizes.small
-                            width: height
-
-                            PlasmaCore.IconItem {
-                                anchors.fill: parent
-                                source: appsSource.data[desktop].iconName
-                                active: isHovered
-                            }
+                        Kirigami.Icon {
+                            source: appsSource.data[desktop].iconName
+                            active: isHovered
+                            implicitHeight: Kirigami.Units.iconSizes.small
+                            implicitWidth: implicitHeight
                         }
 
                         PlasmaComponents.Label {
@@ -105,22 +103,22 @@ Dialog {
 
             section.property: 'category'
             section.delegate: Item {
-                width: parent.width
-                height: units.iconSizes.small + 2*units.smallSpacing
+                width: parent.width - 20
+                height: Kirigami.Units.iconSizes.small + 2*Kirigami.Units.smallSpacing
 
                 Rectangle {
                     anchors.fill: parent
-                    color: theme.complementaryBackgroundColor
+                    color: Kirigami.Theme.alternateBackgroundColor
 
                     PlasmaComponents.Label {
-                        x: units.smallSpacing
+                        x: Kirigami.Units.smallSpacing
                         y: 0
-                        width: parent.width - 2*units.smallSpacing
+                        width: parent.width - 2*Kirigami.Units.smallSpacing
                         height: parent.height
                         verticalAlignment: Text.AlignVCenter
                         text: section
                         font.bold: true
-                        color: theme.complementaryTextColor
+                        color: Kirigami.Theme.textColor
                     }
                 }
             }

@@ -14,11 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http: //www.gnu.org/licenses/>.
  */
-import QtQuick 2.2
-import QtQuick.Controls 1.3
-import QtQuick.Layouts 1.1
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Layouts
+import org.kde.kirigami as Kirigami
 
-Item {
+Kirigami.FormLayout {
     property alias cfg_showSeparately: showSeparately.checked
     property alias cfg_showLowSpeeds: showLowSpeeds.checked
     property string cfg_speedLayout: 'auto'
@@ -125,7 +126,7 @@ Item {
                 }
             }
 
-            property string currentValue: model[currentIndex]['value']
+            property string currentVal: model[currentIndex]['value']
         }
 
         CheckBox {
@@ -165,11 +166,11 @@ Item {
 
         SpinBox {
             id: fontSize
-            minimumValue: 10
-            maximumValue: 200
-            decimals: 0
+            from: 10
+            to: 200
             stepSize: 5
-            suffix: ' %'
+            textFromValue: function(value) { return value + ' %'; }
+            valueFromText: function(text) { return Number(text.remove(RegExp(' %$'))); }
         }
 
         Label {
@@ -178,27 +179,28 @@ Item {
 
         SpinBox {
             id: updateInterval
-            minimumValue: 0.1
-            maximumValue: 10
-            decimals: 1
-            stepSize: 0.1
-            suffix: ' s'
+            from: 1
+            to: 10
+            stepSize: 1
+            textFromValue: function(value) { return value + ' s'; }
+            valueFromText: function(text) { return Number(text.remove(RegExp(' s$'))); }
         }
 
         GroupBox {
-            id: customColors
-            title: 'Use custom colors'
-            checkable: true
+            label: CheckBox {
+                id: customColors
+                text: 'Use custom colors'
+            }
             Layout.columnSpan: 2
 
             GridLayout {
                 anchors.fill: parent
-                anchors.margins: units.smallSpacing
+                anchors.margins: Kirigami.Units.smallSpacing
                 columns: 2
 
                 Label {
                     text: {
-                        if (speedUnits.currentValue === 'bits') {
+                        if (speedUnits.currentVal === 'bits') {
                             return shortUnits.checked ? 'b' : 'b/s:'
                         } else {
                             return shortUnits.checked ? 'B' : 'B/s:'
@@ -213,7 +215,7 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentValue === 'bits') {
+                        if (speedUnits.currentVal === 'bits') {
                             return shortUnits.checked ? 'k:' : 'kb/s:'
                         } else {
                             return shortUnits.checked ? 'K:' : 'KiB/s:'
@@ -228,7 +230,7 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentValue === 'bits') {
+                        if (speedUnits.currentVal === 'bits') {
                             return shortUnits.checked ? 'm:' : 'Mb/s:'
                         } else {
                             return shortUnits.checked ? 'M:' : 'MiB/s:'
@@ -243,7 +245,7 @@ Item {
 
                 Label {
                     text: {
-                        if (speedUnits.currentValue === 'bits') {
+                        if (speedUnits.currentVal === 'bits') {
                             return shortUnits.checked ? 'g:' : 'Gb/s:'
                         } else {
                             return shortUnits.checked ? 'G:' : 'GiB/s:'
