@@ -54,7 +54,7 @@ Item {
         switch (speedLayout) {
             case 'rows': return false
             case 'columns': return true
-            default: return height / 2 * fontSizeScale < Kirigami.Theme.smallestFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical
+            default: return height / 2 * fontSizeScale < Kirigami.Theme.smallFont.pixelSize && plasmoid.formFactor != PlasmaCore.Types.Vertical
         }
     }
 
@@ -101,7 +101,7 @@ Item {
         } else if (plasmoid.formFactor === PlasmaCore.Types.Horizontal) {
             return 0
         } else {
-            return Math.ceil(Kirigami.Theme.smallestFont.pixelSize / fontSizeScale)
+            return Math.ceil(Kirigami.Theme.smallFont.pixelSize / fontSizeScale)
         }
     }
 
