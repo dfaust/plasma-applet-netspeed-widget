@@ -17,9 +17,9 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>
  */
-import QtQuick 2.2
-import org.kde.plasma.core 2.0 as PlasmaCore
-import org.kde.plasma.components 2.0 as PlasmaComponents
+import QtQuick
+import org.kde.plasma.plasma5support as Plasma5Support
+import org.kde.plasma.components as PlasmaComponents
 
 Item {
     id: appPicker
@@ -38,7 +38,7 @@ Item {
         }
     }
 
-    PlasmaCore.DataSource {
+    Plasma5Support.DataSource {
         id: appsSource
         engine: 'apps'
         connectedSources: sources
@@ -52,6 +52,7 @@ Item {
 
     AppMenuDialog {
         id: appMenuDialog
+        x: (parent.width - width) / 2
         onAccepted: {
             menuId = selectedMenuId
         }

@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http: //www.gnu.org/licenses/>.
  */
-import QtQuick 2.2
-import org.kde.plasma.plasmoid 2.0
-import org.kde.plasma.core 2.0 as PlasmaCore
+import QtQuick
+import org.kde.plasma.plasmoid
+import org.kde.plasma.plasma5support as Plasma5Support
 import "../code/utils.js" as Utils
 
-Item {
+PlasmoidItem {
     property bool showSeparately: plasmoid.configuration.showSeparately
     property bool showLowSpeeds: plasmoid.configuration.showLowSpeeds
     property string speedLayout: plasmoid.configuration.speedLayout
@@ -45,16 +45,17 @@ Item {
     property var transferData: {}
     property var speedData: {}
 
-    Plasmoid.preferredRepresentation: Plasmoid.compactRepresentation
-    Plasmoid.compactRepresentation: CompactRepresentation {}
+    fullRepresentation: CompactRepresentation {} // HACK: Remove whenever preferredRepresentation stops being ignored
+    compactRepresentation: CompactRepresentation {}
+    preferredRepresentation: compactRepresentation
 
-    PlasmaCore.DataSource {
+    Plasma5Support.DataSource {
         id: dataSource
         engine: 'executable'
         connectedSources: [Utils.NET_DATA_SOURCE]
         interval: updateInterval * 1000
 
-        onNewData: {
+        onNewData: (sourceName, data) => {
             if (data['exit code'] > 0) {
                 print(data.stderr)
             } else {
