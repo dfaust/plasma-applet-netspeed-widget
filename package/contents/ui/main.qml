@@ -45,9 +45,9 @@ PlasmoidItem {
     property var transferData: {}
     property var speedData: {}
 
-    fullRepresentation: CompactRepresentation {} // HACK: Remove whenever preferredRepresentation stops being ignored
-    compactRepresentation: CompactRepresentation {}
-    preferredRepresentation: compactRepresentation
+    // For some reason, ToolTipAreas only work with fullRepresentation now
+    fullRepresentation: CompactRepresentation {}
+    preferredRepresentation: fullRepresentation
 
     Plasma5Support.DataSource {
         id: dataSource
